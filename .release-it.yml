@@ -1,0 +1,6 @@
+git:
+  requireCleanWorkingDir: false
+github:
+  release: true
+  assets: ["firmwares/DIY_*.hex", "converters/DIY_*.js"]
+  draft: false

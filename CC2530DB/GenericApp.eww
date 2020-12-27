@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workspace>
+    <project>
+        <path>$WS_DIR$\GenericApp.ewp</path>
+    </project>
+    <batchBuild>
+        <batchDefinition>
+            <name>ALL</name>
+            <member>
+                <project>GenericApp</project>
+                <configuration>Zintercom_Router</configuration>
+            </member>
+            <member>
+                <project>GenericApp</project>
+                <configuration>Zintercom_EndDevice</configuration>
+            </member>
+            <member>
+                <project>GenericApp</project>
+                <configuration>Zintercom_Router_CC2592</configuration>
+            </member>
+            <member>
+                <project>GenericApp</project>
+                <configuration>Zintercom_EndDevice_CC2592</configuration>
+            </member>
+            <member>
+                <project>GenericApp</project>
+                <configuration>Zintercom_Router_CC2591</configuration>
+            </member>
+            <member>
+                <project>GenericApp</project>
+                <configuration>Zintercom_EndDevice_CC2591</configuration>
+            </member>
+        </batchDefinition>
+    </batchBuild>
+</workspace>
