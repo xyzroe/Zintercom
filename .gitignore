@@ -57,4 +57,3 @@ Source/version.c
 .vscode/settings.json
 firmwares/*
 
-zstack-lib
