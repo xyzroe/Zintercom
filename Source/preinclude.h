@@ -26,7 +26,6 @@
 
 
 #define HAL_LED TRUE
-#define HAL_ADC FALSE
 #define HAL_LCD FALSE
 
 #define BLINK_LEDS TRUE

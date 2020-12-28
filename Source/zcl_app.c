@@ -34,6 +34,7 @@
 
 #include "hal_key.h"
 #include "hal_led.h"
+#include "hal_adc.h"
 
 #include "utils.h"
 
