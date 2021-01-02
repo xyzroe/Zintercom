@@ -13,6 +13,11 @@ Use [external converters](https://www.zigbee2mqtt.io/information/configuration.h
 
 Converter file located [here](./converters/DIY_Zintercom.js)
 
+### Schematic
+
+<img src="./images/Schematic_Zintercom.png" width="90%">
+
+
 ### PCB size  
   
 `57.5mm x 27.3mm`  
