@@ -20,7 +20,8 @@ extern "C" {
 #define APP_SAVE_ATTRS_EVT 0x0002
 #define APP_BTN_CLICK_EVT 0x0004
 #define APP_RING_RUN_EVT 0x0008
-
+#define APP_BTN_HOLD_EVT 0x0010
+  
 /*********************************************************************
  * MACROS
  */
@@ -109,6 +110,7 @@ typedef struct {
 typedef struct {
     WorkState_t State;
     uint8 RingRunStep;
+    uint32 pressTime;
 } device_state_t;
 
 

@@ -38,21 +38,28 @@
 #error "Board type must be defined"
 #endif
 
+
+#ifdef ZIC_BATTERY_MODE
+#define POWER_SAVING
+#endif
+
 #if defined(HAL_BOARD_TARGET)
     #define HAL_KEY_P0_INPUT_PINS BV(1)
+    #define HAL_KEY_P0_INPUT_PINS_EDGE HAL_KEY_FALLING_EDGE
     #define HAL_KEY_P2_INPUT_PINS BV(0)
-    //#define CO2_UART_PORT 0x00
+    #define HAL_KEY_P2_INPUT_PINS_EDGE HAL_KEY_FALLING_EDGE
     //#define HAL_UART_DMA 1
     //#define HAL_UART_ISR 0
     #define INT_HEAP_LEN 2256
 #elif defined(HAL_BOARD_CHDTECH_DEV)
     #define HAL_UART_DMA 1
     #define HAL_UART_ISR 2
-    //#define CO2_UART_PORT  0x01
-    //#define HAL_KEY_P0_INPUT_PINS 0x21//pins 1 and 2. BV(1) bv(1) pin 2. bit (1 << n)
     #define HAL_KEY_P0_INPUT_PINS BV(1)
+    #define HAL_KEY_P0_INPUT_PINS_EDGE HAL_KEY_FALLING_EDGE
     #define HAL_KEY_P2_INPUT_PINS BV(0)
+    #define HAL_KEY_P2_INPUT_PINS_EDGE HAL_KEY_FALLING_EDGE
     #define DO_DEBUG_UART
+
 #endif
 
 #define FACTORY_RESET_HOLD_TIME_LONG 5000
