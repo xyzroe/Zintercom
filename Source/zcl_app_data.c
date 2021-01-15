@@ -53,7 +53,7 @@ const uint8 zclApp_StackVersion = 4;
 const uint8 zclApp_ManufacturerName[] = {6, 'x', 'y', 'z', 'r', 'o', 'e'};
 const uint8 zclApp_ModelId[] = {13, 'D', 'I', 'Y', '_', 'Z', 'i', 'n', 't', 'e', 'r', 'c', 'o', 'm'};
 
-#if defined(ZIC_BATTERY_MODE) 
+#if defined( ZIC_BATTERY_MODE ) 
 const uint8 zclApp_PowerSource = POWER_SOURCE_BATTERY; 
 #define DEFAULT_TimeReport     30 //minutes
 #else
@@ -89,24 +89,30 @@ device_state_t zclApp_State = {
  */
 
 CONST zclAttrRec_t zclApp_AttrsFirstEP[] = {
+    {BASIC, {ATTRID_BASIC_ZCL_VERSION, ZCL_UINT8, R, (void *)&zclApp_ZCLVersion}},
     {BASIC, {ATTRID_BASIC_APPL_VERSION, ZCL_UINT8, R, (void *)&zclApp_ApplicationVersion}},
     {BASIC, {ATTRID_BASIC_STACK_VERSION, ZCL_UINT8, R, (void *)&zclApp_StackVersion}},
     {BASIC, {ATTRID_BASIC_HW_VERSION, ZCL_UINT8, R, (void *)&zclApp_HWRevision}},
-    {BASIC, {ATTRID_BASIC_ZCL_VERSION, ZCL_UINT8, R, (void *)&zclApp_ZCLVersion}},
     {BASIC, {ATTRID_BASIC_MANUFACTURER_NAME, ZCL_DATATYPE_CHAR_STR, R, (void *)zclApp_ManufacturerName}},
     {BASIC, {ATTRID_BASIC_MODEL_ID, ZCL_DATATYPE_CHAR_STR, R, (void *)zclApp_ModelId}},
-    {BASIC, {ATTRID_BASIC_POWER_SOURCE, ZCL_DATATYPE_ENUM8, R, (void *)&zclApp_PowerSource}},
-    {BASIC, {ATTRID_CLUSTER_REVISION, ZCL_UINT16, R, (void *)&zclApp_clusterRevision_all}},
     {BASIC, {ATTRID_BASIC_DATE_CODE, ZCL_DATATYPE_CHAR_STR, R, (void *)zclApp_DateCode}},
-    {BASIC, {ATTRID_BASIC_SW_BUILD_ID, ZCL_DATATYPE_CHAR_STR, R, (void *)zclApp_DateCode}},
-
-#if defined(ZIC_BATTERY_MODE)    
+    {BASIC, {ATTRID_BASIC_POWER_SOURCE, ZCL_DATATYPE_ENUM8, R, (void *)&zclApp_PowerSource}},
+   
+    
+//#if defined( ZIC_BATTERY_MODE )    
     {POWER_CFG, {ATTRID_POWER_CFG_BATTERY_VOLTAGE, ZCL_UINT8, RR, (void *)&zclBattery_Voltage}},
-/**
- * FYI: calculating battery percentage can be tricky, since this device can be powered from 2xAA or 1xCR2032 batteries
- * */
+    /**
+    * FYI: calculating battery percentage can be tricky, since this device can be powered from 2xAA or 1xCR2032 batteries
+    * */
     {POWER_CFG, {ATTRID_POWER_CFG_BATTERY_PERCENTAGE_REMAINING, ZCL_UINT8, RR, (void *)&zclBattery_PercentageRemainig}},
-#endif
+//#endif
+    
+    {BASIC, {ATTRID_BASIC_SW_BUILD_ID, ZCL_DATATYPE_CHAR_STR, R, (void *)zclApp_DateCode}},
+    {BASIC, {ATTRID_CLUSTER_REVISION, ZCL_UINT16, R, (void *)&zclApp_clusterRevision_all}},
+
+    
+
+
     {ZCL_INTERCOM, {ATTRID_STATE, ZCL_DATATYPE_ENUM8, RRW, (void *)&zclApp_State.State}},
     
     {ZCL_INTERCOM, {ATTRID_MODEOPEN, ZCL_DATATYPE_ENUM8, RRW, (void *)&zclApp_Config.ModeOpen}},
@@ -125,7 +131,7 @@ const cId_t zclApp_InClusterList[] = {ZCL_CLUSTER_ID_GEN_BASIC};
 
 #define APP_MAX_INCLUSTERS (sizeof(zclApp_InClusterList) / sizeof(zclApp_InClusterList[0]))
 
-const cId_t zclApp_OutClusterList[] = {ZCL_INTERCOM};
+const cId_t zclApp_OutClusterList[] = {ZCL_INTERCOM, GEN_ON_OFF};
 
 
 #define APP_MAX_OUT_CLUSTERS (sizeof(zclApp_OutClusterList) / sizeof(zclApp_OutClusterList[0]))

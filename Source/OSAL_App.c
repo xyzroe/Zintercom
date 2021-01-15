@@ -61,7 +61,7 @@ void osalInitTasks(void) {
     zclApp_Init(taskID++);
     zclCommissioning_Init(taskID++);
     zclFactoryResetter_Init(taskID++);
-#ifdef ZIC_BATTERY_MODE
+#if defined( ZIC_BATTERY_MODE )
     zclBattery_Init(taskID++);
 #endif
 }

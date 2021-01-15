@@ -100,7 +100,7 @@
   #define LED3_DDR          P1DIR
   #define LED3_POLARITY     ACTIVE_LOW
 //ex
-  #define LED4_BV           BV(4)
+  #define LED4_BV           BV(5)
   #define LED4_SBIT         P1_5
   #define LED4_DDR          P1DIR
   #define LED4_POLARITY     ACTIVE_LOW

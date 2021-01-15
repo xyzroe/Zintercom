@@ -10,6 +10,7 @@ extern "C" {
  */
 #include "version.h"
 #include "zcl.h"
+#include "zcl_general.h"
 
 /*********************************************************************
  * CONSTANTS
