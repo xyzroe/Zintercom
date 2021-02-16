@@ -22,6 +22,8 @@ extern "C" {
 #define APP_BTN_CLICK_EVT 0x0004
 #define APP_RING_RUN_EVT 0x0008
 #define APP_BTN_HOLD_EVT 0x0010
+#define APP_RING_STOP_EVT 0x0012
+#define APP_TALK_START_EVT 0x0014
   
 /*********************************************************************
  * MACROS
@@ -56,7 +58,7 @@ extern "C" {
 #define LED_PIN         HAL_LED_1
 #define CATCH_PIN       HAL_LED_2
 #define ANSWER_PIN      HAL_LED_3
-#define OPEN_PIN        HAL_LED_4
+#define HANDSET_PIN     HAL_LED_4
 
 #define TIMER_RESTART           TRUE
 #define TIMER_START             FALSE

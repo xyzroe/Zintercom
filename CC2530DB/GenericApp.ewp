@@ -4568,7 +4568,7 @@
         </settings>
     </configuration>
     <configuration>
-        <name>Zintercom_EndDevice_CC2592</name>
+        <name>Zintercom_EndDevice_PA1</name>
         <toolchain>
             <name>8051</name>
         </toolchain>
@@ -4679,15 +4679,15 @@
                 </option>
                 <option>
                     <name>ExePath</name>
-                    <state>Zintercom_EndDevice_CC2592\Exe</state>
+                    <state>Zintercom_EndDevice_PA1\Exe</state>
                 </option>
                 <option>
                     <name>ObjPath</name>
-                    <state>Zintercom_EndDevice_CC2592\Obj</state>
+                    <state>Zintercom_EndDevice_PA1\Obj</state>
                 </option>
                 <option>
                     <name>ListPath</name>
-                    <state>Zintercom_EndDevice_CC2592\List</state>
+                    <state>Zintercom_EndDevice_PA1\List</state>
                 </option>
                 <option>
                     <name>GOutputBinary</name>
@@ -5712,7 +5712,7 @@
         </settings>
     </configuration>
     <configuration>
-        <name>Zintercom_Router_CC2592</name>
+        <name>Zintercom_Router_PA1</name>
         <toolchain>
             <name>8051</name>
         </toolchain>
@@ -5823,15 +5823,15 @@
                 </option>
                 <option>
                     <name>ExePath</name>
-                    <state>Zintercom_Router_CC2592\Exe</state>
+                    <state>Zintercom_Router_PA1\Exe</state>
                 </option>
                 <option>
                     <name>ObjPath</name>
-                    <state>Zintercom_Router_CC2592\Obj</state>
+                    <state>Zintercom_Router_PA1\Obj</state>
                 </option>
                 <option>
                     <name>ListPath</name>
-                    <state>Zintercom_Router_CC2592\List</state>
+                    <state>Zintercom_Router_PA1\List</state>
                 </option>
                 <option>
                     <name>GOutputBinary</name>
@@ -6855,7 +6855,7 @@
         </settings>
     </configuration>
     <configuration>
-        <name>Zintercom_EndDevice_CC2591</name>
+        <name>Zintercom_EndDevice_PA2</name>
         <toolchain>
             <name>8051</name>
         </toolchain>
@@ -6966,15 +6966,15 @@
                 </option>
                 <option>
                     <name>ExePath</name>
-                    <state>Zintercom_EndDevice_CC2591\Exe</state>
+                    <state>Zintercom_EndDevice_PA2\Exe</state>
                 </option>
                 <option>
                     <name>ObjPath</name>
-                    <state>Zintercom_EndDevice_CC2591\Obj</state>
+                    <state>Zintercom_EndDevice_PA2\Obj</state>
                 </option>
                 <option>
                     <name>ListPath</name>
-                    <state>Zintercom_EndDevice_CC2591\List</state>
+                    <state>Zintercom_EndDevice_PA2\List</state>
                 </option>
                 <option>
                     <name>GOutputBinary</name>
@@ -7999,7 +7999,7 @@
         </settings>
     </configuration>
     <configuration>
-        <name>Zintercom_Router_CC2591</name>
+        <name>Zintercom_Router_PA2</name>
         <toolchain>
             <name>8051</name>
         </toolchain>
@@ -8110,15 +8110,15 @@
                 </option>
                 <option>
                     <name>ExePath</name>
-                    <state>Zintercom_Router_CC2591\Exe</state>
+                    <state>Zintercom_Router_PA2\Exe</state>
                 </option>
                 <option>
                     <name>ObjPath</name>
-                    <state>Zintercom_Router_CC2591\Obj</state>
+                    <state>Zintercom_Router_PA2\Obj</state>
                 </option>
                 <option>
                     <name>ListPath</name>
-                    <state>Zintercom_Router_CC2591\List</state>
+                    <state>Zintercom_Router_PA2\List</state>
                 </option>
                 <option>
                     <name>GOutputBinary</name>
@@ -9696,10 +9696,10 @@
                 <configuration>CHDTECH_DEV_Router</configuration>
                 <configuration>Zintercom_EndDevice</configuration>
                 <configuration>Zintercom_Router</configuration>
-                <configuration>Zintercom_EndDevice_CC2592</configuration>
-                <configuration>Zintercom_Router_CC2592</configuration>
-                <configuration>Zintercom_EndDevice_CC2591</configuration>
-                <configuration>Zintercom_Router_CC2591</configuration>
+                <configuration>Zintercom_EndDevice_PA1</configuration>
+                <configuration>Zintercom_Router_PA1</configuration>
+                <configuration>Zintercom_EndDevice_PA2</configuration>
+                <configuration>Zintercom_Router_PA2</configuration>
             </excluded>
         </file>
         <file>
@@ -9711,8 +9711,8 @@
                 <configuration>CHDTECH_DEV_End</configuration>
                 <configuration>CHDTECH_DEV_Router</configuration>
                 <configuration>Zintercom_EndDevice</configuration>
-                <configuration>Zintercom_EndDevice_CC2592</configuration>
-                <configuration>Zintercom_EndDevice_CC2591</configuration>
+                <configuration>Zintercom_EndDevice_PA1</configuration>
+                <configuration>Zintercom_EndDevice_PA2</configuration>
             </excluded>
         </file>
         <file>
