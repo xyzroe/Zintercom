@@ -4,7 +4,7 @@
 ### How to join
 Reset to FN by reboot device 5 times with interval less than 10 seconds.  
 Reset to FN by press and hold BTN for 5 seconds.  
-  
+
 LED will flash during reset.  
 
 
@@ -15,17 +15,17 @@ Converter file located [here](./converters/DIY_Zintercom.js)
 
 ### Schematic
 
-<img src="./images/Schematic_Zintercom.png" width="90%">
+<img src="./hardware/Schematic_Zintercom.png" width="90%">
 
 
 ### PCB size  
-  
+
 `57.5mm x 27.3mm`  
 <img src="./images/dimensions.png" width="60%">
 
 
 ### DC Power  
-  
+
 Support `router` and `end device` modes.  
 Install `E18-MS1PA1`, `E18-MS1PA2` or `E18-MS1-PCB`.  
 <img src="./images/front_side.png" width="70%">
@@ -34,7 +34,7 @@ Install `E18-MS1PA1`, `E18-MS1PA2` or `E18-MS1-PCB`.
 
 
 ### Battery Power  
-  
+
 Support only `end device` mode.  
 Install `E18-MS1-PCB` only!  
 <img src="./images/back_2xAAA.png" width="35%">
