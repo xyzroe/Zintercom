@@ -51,9 +51,9 @@
  */
 
 #if defined (HAL_BOARD_CHDTECH_DEV)
-  #define HAL_NUM_LEDS            4
+  #define HAL_NUM_LEDS            1
 #elif defined(HAL_BOARD_TARGET)
-  #define HAL_NUM_LEDS            4
+  #define HAL_NUM_LEDS            1
 #else
   #error Unknown Board Indentifier
 #endif
@@ -76,7 +76,7 @@
   #define LED3_SBIT         P0_2
   #define LED3_DDR          P0DIR
   #define LED3_POLARITY     ACTIVE_HIGH
-//open
+//handset
   #define LED4_BV           BV(3)
   #define LED4_SBIT         P0_3
   #define LED4_DDR          P0DIR
@@ -84,17 +84,17 @@
 
 
 #elif defined(HAL_BOARD_CHDTECH_DEV)
- //blue
+ //blue//d3
   #define LED1_BV           BV(4)
   #define LED1_SBIT         P1_4
   #define LED1_DDR          P1DIR
   #define LED1_POLARITY     ACTIVE_LOW
-//green
+//green//d2
   #define LED2_BV           BV(1)
   #define LED2_SBIT         P1_1
   #define LED2_DDR          P1DIR
   #define LED2_POLARITY     ACTIVE_LOW
-//red
+//red//d1
   #define LED3_BV           BV(0)
   #define LED3_SBIT         P1_0
   #define LED3_DDR          P1DIR
@@ -197,7 +197,7 @@ extern void MAC_RfFrontendSetup(void);
 #define PREFETCH_DISABLE()    st( FCTL = 0x04; )
 
 /* ----------- Board Initialization ---------- */
-#if defined (HAL_BOARD_CHDTECH_DEV) || (!defined(HAL_PA_LNA) && !defined(HAL_PA_LNA_CC2592))
+#if !defined(HAL_PA_LNA) && !defined(HAL_PA_LNA_CC2592)
 #define HAL_BOARD_INIT()                                         \
 {                                                                \
   uint16 i;                                                      \
@@ -216,6 +216,7 @@ extern void MAC_RfFrontendSetup(void);
   LED1_DDR |= LED1_BV;                                           \
   LED2_DDR |= LED2_BV;                                           \
   LED3_DDR |= LED3_BV;                                           \
+  LED4_DDR |= LED4_BV;                                           \
 }
 
 #elif defined (HAL_PA_LNA)
@@ -247,7 +248,8 @@ extern void MAC_RfFrontendSetup(void);
   HAL_BOARD_RF_FRONTEND_SETUP();                                 \
   LED1_DDR |= LED1_BV;                                           \
   LED2_DDR |= LED2_BV;                                           \
-  LED3_DDR |= LED3_BV;                                           \
+  LED3_DDR |= LED3_BV;    
+  LED4_DDR |= LED4_BV; \
 }
 
 #elif defined (HAL_PA_LNA_CC2592) || defined (HAL_PA_LNA_SE2431L)
@@ -280,6 +282,7 @@ extern void MAC_RfFrontendSetup(void);
   LED1_DDR |= LED1_BV;                                           \
   LED2_DDR |= LED2_BV;                                           \
   LED3_DDR |= LED3_BV;                                           \
+  LED4_DDR |= LED4_BV;                                           \
 }
 #endif
 

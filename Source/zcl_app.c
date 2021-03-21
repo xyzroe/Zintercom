@@ -104,7 +104,7 @@ static zclGeneral_AppCallbacks_t zclApp_CmdCallbacks = {
     NULL                 // RSSI Location Response command
 };
 void zclApp_Init(byte task_id) {
-    HalLedSet(HAL_LED_ALL, HAL_LED_MODE_BLINK);
+    //HalLedSet(HAL_LED_ALL, HAL_LED_MODE_BLINK);
 
     zclApp_RestoreAttributesFromNV();
 
@@ -132,7 +132,24 @@ static void zclApp_HandleKeys(byte portAndAction, byte keyCode) {
     LREP("zclApp_HandleKeys portAndAction=0x%X keyCode=0x%X\r\n", portAndAction, keyCode);
     zclCommissioning_HandleKeys(portAndAction, keyCode);
     
-    if (portAndAction & 0x01) { //P0 Ring
+    if (portAndAction & 0x01) { //P0 Ring //S1 P0_1
+      /*
+      afAddrType_t inderect_DstAddr = {.addrMode = (afAddrMode_t)AddrNotPresent, .endPoint = 0, .addr.shortAddr = 0};
+      if (portAndAction & HAL_KEY_PRESS) {
+          osal_pwrmgr_task_state(zclApp_TaskID, PWRMGR_HOLD);
+          LREPMaster("Ring start\r\n");
+          HalLedSet(LED_PIN, HAL_LED_MODE_BLINK);
+          zclGeneral_SendOnOff_CmdOn(zclApp_FirstEP.EndPoint, &inderect_DstAddr, FALSE, bdb_getZCLFrameCounter());
+          osal_start_reload_timer(zclApp_TaskID, APP_RING_RUN_EVT, 500);
+      }
+      if (portAndAction & HAL_KEY_RELEASE) {
+          zclApp_RingEnd();
+          zclGeneral_SendOnOff_CmdOff(zclApp_FirstEP.EndPoint, &inderect_DstAddr, FALSE, bdb_getZCLFrameCounter());
+          osal_pwrmgr_task_state(zclApp_TaskID, PWRMGR_CONSERVE);
+      }
+      */
+      osal_stop_timerEx(zclApp_TaskID, APP_RING_STOP_EVT);
+      osal_clear_event(zclApp_TaskID, APP_RING_STOP_EVT);
       if (portAndAction & HAL_KEY_PRESS) {
           //osal_pwrmgr_task_state(zclApp_TaskID, PWRMGR_HOLD);
           //LREPMaster("Ring start\r\n");
@@ -143,8 +160,7 @@ static void zclApp_HandleKeys(byte portAndAction, byte keyCode) {
         
         
           //exit old stop timer
-          //osal_stop_timerEx(zclApp_TaskID, APP_RING_STOP_EVT);
-          //osal_clear_event(zclApp_TaskID, APP_RING_STOP_EVT);
+          
         
           //start ring 
           if (zclApp_State.RingRunStep == 0) {
@@ -153,26 +169,27 @@ static void zclApp_HandleKeys(byte portAndAction, byte keyCode) {
             zclApp_State.RingRunStep = 1;
             osal_start_reload_timer(zclApp_TaskID, APP_RING_RUN_EVT, 500);
             afAddrType_t inderect_DstAddr = {.addrMode = (afAddrMode_t)AddrNotPresent, .endPoint = 0, .addr.shortAddr = 0};
-      
             zclGeneral_SendOnOff_CmdOn(zclApp_FirstEP.EndPoint, &inderect_DstAddr, FALSE, bdb_getZCLFrameCounter());
           }
         
           //start new stop timer (ring ends timer)
-          //osal_start_reload_timer(zclApp_TaskID, APP_RING_STOP_EVT, 1000);
+          
         
           
 
           //osal_start_reload_timer(zclApp_TaskID, APP_RING_RUN_EVT, 1000); //stop  ring after 1s of inactive
       }
+      osal_start_reload_timer(zclApp_TaskID, APP_RING_STOP_EVT, 3000);
       //if (portAndAction & HAL_KEY_RELEASE) {
          //zclApp_RingEnd();
          //zclGeneral_SendOnOff_CmdOff(zclApp_FirstEP.EndPoint, &inderect_DstAddr, FALSE, bdb_getZCLFrameCounter());
          //osal_pwrmgr_task_state(zclApp_TaskID, PWRMGR_CONSERVE);
       //}
+    
       
     }
 
-    if (portAndAction & 0x04) { //P2 Btn
+    if (portAndAction & 0x04) { //P2 Btn //S2 P2_0
       zclFactoryResetter_HandleKeys(portAndAction, keyCode);
       if (portAndAction & HAL_KEY_PRESS) {
         zclApp_State.pressTime = osal_getClock();
@@ -312,10 +329,10 @@ static void zclApp_RingRun(void) {
         break; 
     case Droped:
         switch (zclApp_State.RingRunStep) {
-        case 2:
+        case 3:
             zclApp_OneReport();
             break;
-        case 3:
+        case 4:
             zclApp_RingEnd();      
             break;
         }
@@ -326,6 +343,7 @@ static void zclApp_RingRun(void) {
 
 static void zclApp_TalkStart(void) {
     LREPMaster("Talk start\r\n");
+    zclApp_OneReport();
     HalLedSet(ANSWER_PIN, HAL_LED_MODE_ON);
     if (zclApp_Config.ModeSound == true) {
         HalLedSet(HANDSET_PIN, HAL_LED_MODE_ON);
@@ -411,7 +429,7 @@ static void zclApp_Report(void) {
 }
 
 static void zclApp_OneReport(void) {
-    //HalLedSet(LED_PIN, HAL_LED_MODE_BLINK);
+    HalLedSet(LED_PIN, HAL_LED_MODE_BLINK);
     bdb_RepChangedAttrValue(zclApp_FirstEP.EndPoint, ZCL_INTERCOM, ATTRID_STATE);
     bdb_RepChangedAttrValue(zclApp_FirstEP.EndPoint, ZCL_INTERCOM, ATTRID_MODEOPEN);
     bdb_RepChangedAttrValue(zclApp_FirstEP.EndPoint, ZCL_INTERCOM, ATTRID_MODESOUND);
