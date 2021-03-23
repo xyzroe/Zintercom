@@ -13,9 +13,10 @@ Use [external converters](https://www.zigbee2mqtt.io/information/configuration.h
 
 Converter file located [here](./converters/DIY_Zintercom.js)  
 
-<img src="./images/z2m_dark.png" width="45%">
-<img src="./images/z2m_light.png" width="45%">
-  
+<img src="./images/z2m_dashboard.png" width="45%">
+
+<img src="./images/z2m_exposes.png" width="90%">
+
 ### Schematic
 
 <img src="./hardware/Schematic_Zintercom.png" width="90%">
