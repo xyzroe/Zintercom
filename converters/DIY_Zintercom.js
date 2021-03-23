@@ -4,7 +4,8 @@ const {
     exposes
 } = require('zigbee-herdsman-converters');
 
-const e = exposes.presets;
+const ep = exposes.presets;
+const ea = exposes.access;
 
 const ZCL_DATATYPE_INT16 = 0x29;
 const ZCL_DATATYPE_UINT8 = 0x20;
@@ -61,46 +62,6 @@ const repInterval = {
     MINUTES_5: 300,
     MINUTE: 60,
 };
-//const ACCESS_STATE = 0b001, ACCESS_WRITE = 0b010, ACCESS_READ = 0b100;
-
-const hass = {
-    co2: {
-        type: 'sensor',
-        object_id: 'co2',
-        discovery_payload: {
-            unit_of_measurement: 'ppm',
-            icon: 'mdi:molecule-co2',
-            value_template: '{{ value_json.co2 }}',
-        },
-    },
-    temperature: {
-        type: 'sensor',
-        object_id: 'temperature',
-        discovery_payload: {
-            unit_of_measurement: '°C',
-            device_class: 'temperature',
-            value_template: '{{ value_json.temperature }}',
-        },
-    },
-    humidity: {
-        type: 'sensor',
-        object_id: 'humidity',
-        discovery_payload: {
-            unit_of_measurement: '%',
-            device_class: 'humidity',
-            value_template: '{{ value_json.humidity }}',
-        },
-    },
-    presure: {
-        type: 'sensor',
-        object_id: 'pressure',
-        discovery_payload: {
-            unit_of_measurement: 'hPa',
-            device_class: 'pressure',
-            value_template: '{{ value_json.pressure }}',
-        },
-    }
-};
 
 
 
@@ -114,10 +75,10 @@ const fz = {
               result.state = ['Idle', 'Ring', 'Talk', 'Open', 'Drop'][msg.data[0x0050]];
           }
           if (msg.data.hasOwnProperty(0x0051)) {
-              result.mode_open = ['Never', 'Once', 'Always', 'Drop'][msg.data[0x0051]];
+              result.mode = ['Never', 'Once', 'Always', 'Drop'][msg.data[0x0051]];
           }
           if (msg.data.hasOwnProperty(0x0052)) {
-              result.mode_sound = ['OFF', 'ON'][msg.data[0x0052]];
+              result.sound = ['OFF', 'ON'][msg.data[0x0052]];
           }
           if (msg.data.hasOwnProperty(0x0053)) {
               result.time_ring = msg.data[0x0053];
@@ -138,7 +99,7 @@ const fz = {
 
 const tz = {
   diy_zintercom_config: {
-      key: ['state', 'mode_open', 'mode_sound', 'time_ring', 'time_talk', 'time_open', 'time_report'],
+      key: ['state', 'mode', 'sound', 'time_ring', 'time_talk', 'time_open', 'time_report'],
       convertSet: async (entity, key, rawValue, meta) => {
           const lookup = {
               'OFF': 0x00,
@@ -154,13 +115,13 @@ const tz = {
 
           let value = lookup.hasOwnProperty(rawValue) ? lookup[rawValue] : parseInt(rawValue, 10);
 
-          if (key == 'mode_open') {
+          if (key == 'mode') {
               value = modeOpenLookup.hasOwnProperty(rawValue) ? modeOpenLookup[rawValue] : parseInt(rawValue, 10);
           }
 
           const payloads = {
-              mode_open: {0x0051: {value, type: 0x30}},
-              mode_sound: {0x0052: {value, type: 0x10}},
+              mode: {0x0051: {value, type: 0x30}},
+              sound: {0x0052: {value, type: 0x10}},
               time_ring: {0x0053: {value, type: 0x20}},
               time_talk: {0x0054: {value, type: 0x20}},
               time_open: {0x0055: {value, type: 0x20}},
@@ -175,8 +136,8 @@ const tz = {
       convertGet: async (entity, key, meta) => {
           const payloads = {
               state: ['closuresDoorLock', 0x0050],
-              mode_open: ['closuresDoorLock', 0x0051],
-              mode_sound: ['closuresDoorLock', 0x0052],
+              mode: ['closuresDoorLock', 0x0051],
+              sound: ['closuresDoorLock', 0x0052],
               time_ring: ['closuresDoorLock', 0x0053],
               time_talk: ['closuresDoorLock', 0x0054],
               time_open: ['closuresDoorLock', 0x0055],
@@ -195,12 +156,6 @@ const device = {
     supports: '',
     //homeassistant: [hass.temperature, hass.presure, hass.humidity, hass.co2],
     fromZigbee: [
-      /*
-        fromZigbeeConverters.temperature,
-        fromZigbeeConverters.humidity,
-        fromZigbeeConverters.co2,
-        fromZigbeeConverters.pressure,
-        */
         fromZigbeeConverters.battery,
         fz.diy_zintercom_config,
     ],
@@ -254,8 +209,8 @@ const device = {
             minimumReportInterval: 0,
             maximumReportInterval: 3600,
             reportableChange: 0,
-        },
-      ];
+          },
+        ];
         await firstEndpoint.configureReporting('closuresDoorLock', payload);
         /**/
         /*
@@ -274,22 +229,22 @@ const device = {
 
     },
     exposes: [
-        //exposes.numeric('co2', ACCESS_STATE).withUnit('ppm'),
-        e.battery(),
-        exposes.enum('state', exposes.access.STATE_GET, ['Idle', 'Ring', 'Talk', 'Open', 'Drop'])
+        exposes.enum('state', ea.STATE_GET, ['Idle', 'Ring', 'Talk', 'Open', 'Drop'])
             .withDescription('Current state'),
-        exposes.enum('mode_open', exposes.access.ALL, ['Never', 'Once', 'Always', 'Drop'])
-            .withDescription('Auto open mode'),
-        exposes.binary('mode_sound', exposes.access.ALL, 'ON', 'OFF')
-            .withDescription('Sound mode'),
-        exposes.numeric('time_ring', exposes.access.ALL).withUnit('sec')
-            .withDescription('Time to ring'),
-        exposes.numeric('time_talk', exposes.access.ALL).withUnit('sec')
-            .withDescription('Time to "speak" before open'),
-        exposes.numeric('time_open', exposes.access.ALL).withUnit('sec')
-            .withDescription('Time to "hold open button"'),
-        exposes.numeric('time_report', exposes.access.ALL).withUnit('min')
+        exposes.enum('mode', ea.ALL, ['Never', 'Once', 'Always', 'Drop'])
+            .withDescription('Select open mode'),
+        exposes.binary('sound', ea.ALL, 'ON', 'OFF').withProperty('sound')
+            .withDescription('Enable or disable sound'),
+        exposes.numeric('time_ring', ea.ALL).withUnit('sec')
+            .withDescription('Time to ring before answer'),
+        exposes.numeric('time_talk', ea.ALL).withUnit('sec')
+            .withDescription('Time to hold before open'),
+        exposes.numeric('time_open', ea.ALL).withUnit('sec')
+            .withDescription('Time to open before end'),
+        exposes.numeric('time_report', ea.ALL).withUnit('min')
             .withDescription('Reporting interval'),
+        ep.battery(),
+        ep.linkquality(),
     ],
 };
 

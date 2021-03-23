@@ -65,8 +65,8 @@ const uint8 zclApp_PowerSource = POWER_SOURCE_DC;
 #define DEFAULT_ModeSound      TRUE 
 
 #define DEFAULT_TimeRing       3 //seconds to ring, before answer
-#define DEFAULT_TimeTalk       1 //seconds to talk, before open
-#define DEFAULT_TimeOpen       2 //seconds to hold open
+#define DEFAULT_TimeTalk       2 //seconds to talk, before open
+#define DEFAULT_TimeOpen       1 //seconds to hold open
 
 
 application_config_t zclApp_Config = {

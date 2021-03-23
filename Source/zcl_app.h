@@ -21,9 +21,9 @@ extern "C" {
 #define APP_SAVE_ATTRS_EVT 0x0002
 #define APP_BTN_CLICK_EVT 0x0004
 #define APP_RING_RUN_EVT 0x0008
-#define APP_BTN_HOLD_EVT 0x0010
-#define APP_RING_STOP_EVT 0x0012
-#define APP_TALK_START_EVT 0x0014
+#define APP_BTN_HOLD_EVT 0x0016
+#define APP_RING_STOP_EVT 0x0032
+#define APP_TALK_START_EVT 0x0064
   
 /*********************************************************************
  * MACROS
