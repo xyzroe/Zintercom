@@ -137,15 +137,14 @@ static void zclApp_HandleKeys(byte portAndAction, byte keyCode) {
     //zclCommissioning_HandleKeys(portAndAction, keyCode);
     
     if (portAndAction & 0x01) { //P0 Ring //S1 P0_1
-
+      
+      //exit old stop timer
+      osal_stop_timerEx(zclApp_TaskID, APP_RING_STOP_EVT);
+      osal_clear_event(zclApp_TaskID, APP_RING_STOP_EVT);
+      
       if (portAndAction & HAL_KEY_PRESS) {
-
           //osal_pwrmgr_task_state(zclApp_TaskID, PWRMGR_HOLD);
-
-        
-          //exit old stop timer
-          osal_stop_timerEx(zclApp_TaskID, APP_RING_STOP_EVT);
-          osal_clear_event(zclApp_TaskID, APP_RING_STOP_EVT);
+          //osal_pwrmgr_task_state(Hal_TaskID, PWRMGR_CONSERVE);
         
           //start ring 
           if (zclApp_State.RingRunStep == 0) {
@@ -156,20 +155,15 @@ static void zclApp_HandleKeys(byte portAndAction, byte keyCode) {
             afAddrType_t inderect_DstAddr = {.addrMode = (afAddrMode_t)AddrNotPresent, .endPoint = 0, .addr.shortAddr = 0};
             zclGeneral_SendOnOff_CmdOn(zclApp_FirstEP.EndPoint, &inderect_DstAddr, FALSE, bdb_getZCLFrameCounter());
           }
-        
-          //start new stop timer (ring ends timer)
-           osal_start_reload_timer(zclApp_TaskID, APP_RING_STOP_EVT, 3000);
-        
       }
       
+      //start new stop timer (ring ends timer)
+      osal_start_reload_timer(zclApp_TaskID, APP_RING_STOP_EVT, 3000);
     }
 
     if (portAndAction & 0x04) { //P2 Btn //S2 P2_0
       zclFactoryResetter_HandleKeys(portAndAction, keyCode);
       if (portAndAction & HAL_KEY_PRESS) {
-        #if defined( ZIC_BATTERY_MODE )
-          zclBattery_Report();
-        #endif
         LREPMaster("Key pressed\r\n");
         osal_start_reload_timer(zclApp_TaskID, APP_BTN_CLICK_EVT, 50);
       }
@@ -262,10 +256,6 @@ static void zclApp_RingRun(void) {
     case Idle:
         zclApp_State.State = Ring;
         zclApp_OneReport();
-        if (zclApp_Config.ModeOpen == Drop){
-            zclApp_State.State = Droped;
-            zclApp_TalkStart();
-        }
         break; 
     case Ring:
         if ((zclApp_Config.ModeOpen == Once) || (zclApp_Config.ModeOpen == Always)){
@@ -273,6 +263,10 @@ static void zclApp_RingRun(void) {
                 zclApp_State.State = Talk;
                 zclApp_TalkStart();
             }
+        }
+        if (zclApp_Config.ModeOpen == Drop){
+            zclApp_State.State = Droped;
+            zclApp_TalkStart();
         }
         break; 
     case Talk:
@@ -286,20 +280,15 @@ static void zclApp_RingRun(void) {
         break; 
     case Open:
         if ((zclApp_Config.ModeOpen == Once) || (zclApp_Config.ModeOpen == Always)){
-            if (zclApp_State.RingRunStep > ((zclApp_Config.TimeRing + zclApp_Config.TimeTalk+ zclApp_Config.TimeOpen) * 2)) {
+            if (zclApp_State.RingRunStep > ((zclApp_Config.TimeRing + zclApp_Config.TimeTalk + zclApp_Config.TimeOpen) * 2)) {
                 zclApp_RingEnd();
             }
         }
         break; 
     case Droped:
-        switch (zclApp_State.RingRunStep) {
-        case 3:
-            zclApp_OneReport();
-            break;
-        case 4:
-            zclApp_RingEnd();      
-            break;
-        }
+        if (zclApp_State.RingRunStep > 3) {
+            zclApp_RingEnd();
+        }     
         break; 
     }
 
@@ -390,7 +379,9 @@ static void zclApp_BtnClick(bool hold) {
         currentBtnClickPhase = 0;
         break;
     }
-    
+    #if defined( ZIC_BATTERY_MODE )
+    zclBattery_Report();
+    #endif
 }
 
 static void zclApp_Report(void) {
