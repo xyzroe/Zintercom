@@ -242,15 +242,15 @@ extern void MAC_RfFrontendSetup(void);
   P1DIR |= BV(0) | BV(1);                                        \
                                                                  \
   /* Set PA/LNA HGM control P0_7 */                              \
-  P0DIR |= BV(7);                                              \
+  P0DIR |= BV(7);                                                \
                                                                  \
                                                                  \
   /* setup RF frontend if necessary */                           \
   HAL_BOARD_RF_FRONTEND_SETUP();                                 \
   LED1_DDR |= LED1_BV;                                           \
   LED2_DDR |= LED2_BV;                                           \
-  LED3_DDR |= LED3_BV;    
-  LED4_DDR |= LED4_BV; \
+  LED3_DDR |= LED3_BV;                                           \
+  LED4_DDR |= LED4_BV;                                           \
 }
 
 #elif defined (HAL_PA_LNA_CC2592) || defined (HAL_PA_LNA_SE2431L)
