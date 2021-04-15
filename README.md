@@ -28,7 +28,7 @@ LED will flash during reset.
 ### How to add device into zigbe2mqtt
 Use [external converters](https://www.zigbee2mqtt.io/information/configuration.html#external-converters-configuration) feature
 
-Converter file located [here](./converters/DIY_Zintercom.js)  
+Converter file located [here](./converters/DIYRuZ_Zintercom.js)  
 
 <img src="./images/z2m_exposes.png" width="90%">  
 
