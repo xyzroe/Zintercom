@@ -7,11 +7,6 @@ const {
 const ep = exposes.presets;
 const ea = exposes.access;
 
-const ZCL_DATATYPE_INT16 = 0x29;
-const ZCL_DATATYPE_UINT8 = 0x20;
-const ZCL_DATATYPE_UINT16 = 0x21;
-const ZCL_DATATYPE_BOOLEAN = 0x10;
-const ZCL_DATATYPE_INT32 = 0x2b;
 const bind = async (endpoint, target, clusters) => {
     for (const cluster of clusters) {
         await endpoint.bind(cluster, target);
@@ -62,8 +57,6 @@ const repInterval = {
     MINUTES_5: 300,
     MINUTE: 60,
 };
-
-
 
 const fz = {
   diy_zintercom_config: {
@@ -150,11 +143,10 @@ const tz = {
 
 const device = {
     zigbeeModel: ['DIY_Zintercom'],
-    model: 'DIY_Zintercom',
-    vendor: 'xyzroe',
-    description: '[Intercom Auto Opener]',
-    supports: '',
-    //homeassistant: [hass.temperature, hass.presure, hass.humidity, hass.co2],
+    model: 'DIYRuZ_Zintercom',
+    vendor: 'DIYRuZ',
+    description: '[Matrix intercom auto opener](https://diyruz.github.io/posts/zintercom/)',
+    icon: 'https://github.com/diyruz/Zintercom/blob/master/images/z2m.png?raw=true',
     fromZigbee: [
         fromZigbeeConverters.battery,
         fz.diy_zintercom_config,
@@ -169,37 +161,11 @@ const device = {
     configure: async (device, coordinatorEndpoint) => {
         const firstEndpoint = device.getEndpoint(1);
 
-        //await bind(firstEndpoint, coordinatorEndpoint, ['msCO2', 'closuresDoorLock', 'genOnOff']);
-
         await bind(firstEndpoint, coordinatorEndpoint, ['closuresDoorLock', 'genPowerCfg']);
+
         const overides = {min: 0, max: 3600, change: 0};
         await configureReporting.batteryVoltage(firstEndpoint, overides);
         await configureReporting.batteryPercentageRemaining(firstEndpoint, overides);
-/*
-        if (device.applicationVersion < 3) { // Legacy PM2 firmwares
-            const payload = [{
-                attribute: 'batteryPercentageRemaining',
-                minimumReportInterval: 0,
-                maximumReportInterval: 3600,
-                reportableChange: 0,
-            }, {
-                attribute: 'batteryVoltage',
-                minimumReportInterval: 0,
-                maximumReportInterval: 3600,
-                reportableChange: 0,
-            }];
-            await firstEndpoint.configureReporting('genPowerCfg', payload);
-        }
-        */
-/*
-        const msBindPayload = [{
-            attribute: 'measuredValue',
-            minimumReportInterval: 0,
-            maximumReportInterval: 3600,
-            reportableChange: 0,
-        }];
-        await firstEndpoint.configureReporting('msCO2', msBindPayload);
-*/
 
         const payload = [{
             attribute: {
@@ -212,20 +178,6 @@ const device = {
           },
         ];
         await firstEndpoint.configureReporting('closuresDoorLock', payload);
-        /**/
-        /*
-        await firstEndpoint.configureReporting('msTemperatureMeasurement', msBindPayload);
-        await firstEndpoint.configureReporting('msRelativeHumidity', msBindPayload);
-
-        const pressureBindPayload = [{
-            attribute: 'scaledValue',
-            minimumReportInterval: 0,
-            maximumReportInterval: 3600,
-            reportableChange: 0,
-        }];
-        await firstEndpoint.configureReporting('msPressureMeasurement', pressureBindPayload);
-        */
-
 
     },
     exposes: [
