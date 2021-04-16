@@ -23,24 +23,24 @@ Reset to FN by press and hold BTN for 5 seconds.
 
 LED will flash during reset.  
 
-<img src="./images/z2m_dashboard.gif" width="45%">     
+<img src="/images/z2m_dashboard.gif" width="45%">     
 
 ### How to add device into zigbe2mqtt
 Use [external converters](https://www.zigbee2mqtt.io/information/configuration.html#external-converters-configuration) feature
 
-Converter file located [here](./converters/DIYRuZ_Zintercom.js)  
+Converter file located [here](https://github.com/diyruz/Zintercom/blob/master/converters/DIYRuZ_Zintercom.js)  
 
-<img src="./images/z2m_exposes.png" width="90%">  
+<img src="/images/z2m_exposes.png" width="90%">  
 
 ### Schematic
 
-<img src="./hardware/Schematic_Zintercom.png" width="90%">
+<img src="/hardware/Schematic_Zintercom.png" width="90%">
 
 
 ### PCB size  
 
 `57.5mm x 27.3mm`  
-<img src="./images/dimensions.png" width="60%">
+<img src="/images/dimensions.png" width="60%">
 
 
 ### DC Power  
@@ -48,9 +48,9 @@ Converter file located [here](./converters/DIYRuZ_Zintercom.js)
 Support `router` and `end device` modes.  
 Install `E18-MS1PA1`, `E18-MS1PA2` or `E18-MS1-PCB`.   
 
-<img src="./images/front_side.png" width="70%">  
+<img src="/images/front_side.png" width="70%">  
 
-<img src="./images/back_DC_5-9V.png" width="70%">
+<img src="/images/back_DC_5-9V.png" width="70%">
 
 
 ### Battery Power  
@@ -65,7 +65,7 @@ But you have the ability to set the button mode or at the time of the call.
 
 If any commands are in the coordinator's queue, they will be executed after a button is pressed or a call is received.
 
-<img src="./images/back_2xAAA.png" width="70%">
+<img src="/images/back_2xAAA.png" width="70%">
 
 ##### The mode set by the Zigbee command `overwrites` the mode set by the button.
 
