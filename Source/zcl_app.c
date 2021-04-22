@@ -88,8 +88,6 @@ static void zclApp_RingRun(void);
 static void zclApp_TalkStart(void);
 static void zclApp_RingEnd(void);
 
-//static uint32 pressTime = 0;
-
 /*********************************************************************
  * ZCL General Profile Callback table
  */
@@ -141,33 +139,45 @@ static void zclApp_HandleKeys(byte portAndAction, byte keyCode) {
       //exit old stop timer
       osal_stop_timerEx(zclApp_TaskID, APP_RING_STOP_EVT);
       osal_clear_event(zclApp_TaskID, APP_RING_STOP_EVT);
-      
+      //start new stop timer (ring ends timer)
+      osal_start_reload_timer(zclApp_TaskID, APP_RING_STOP_EVT, 3000);
+
       if (portAndAction & HAL_KEY_PRESS) {
           //osal_pwrmgr_task_state(zclApp_TaskID, PWRMGR_HOLD);
           //osal_pwrmgr_task_state(Hal_TaskID, PWRMGR_CONSERVE);
         
           //start ring 
           if (zclApp_State.RingRunStep == 0) {
-            LREPMaster("Ring start\r\n");
-            HalLedSet(LED_PIN, HAL_LED_MODE_BLINK);
-            zclApp_State.RingRunStep = 1;
-            osal_start_reload_timer(zclApp_TaskID, APP_RING_RUN_EVT, 500);
-            afAddrType_t inderect_DstAddr = {.addrMode = (afAddrMode_t)AddrNotPresent, .endPoint = 0, .addr.shortAddr = 0};
-            zclGeneral_SendOnOff_CmdOn(zclApp_FirstEP.EndPoint, &inderect_DstAddr, FALSE, bdb_getZCLFrameCounter());
+              LREPMaster("Ring start\r\n");
+              HalLedSet(LED_PIN, HAL_LED_MODE_BLINK);
+              zclApp_State.RingRunStep = 1;
+              osal_start_reload_timer(zclApp_TaskID, APP_RING_RUN_EVT, 500);
+              afAddrType_t inderect_DstAddr = {.addrMode = (afAddrMode_t)AddrNotPresent, .endPoint = 0, .addr.shortAddr = 0};
+              zclGeneral_SendOnOff_CmdOn(zclApp_FirstEP.EndPoint, &inderect_DstAddr, FALSE, bdb_getZCLFrameCounter());
           }
       }
       
-      //start new stop timer (ring ends timer)
-      osal_start_reload_timer(zclApp_TaskID, APP_RING_STOP_EVT, 3000);
     }
 
     if (portAndAction & 0x04) { //P2 Btn //S2 P2_0
       zclFactoryResetter_HandleKeys(portAndAction, keyCode);
       if (portAndAction & HAL_KEY_PRESS) {
         LREPMaster("Key pressed\r\n");
-        osal_start_reload_timer(zclApp_TaskID, APP_BTN_CLICK_EVT, 50);
+	zclApp_State.pressTime = osal_getClock();
+        LREP("pressTime = %d\r\n", zclApp_State.pressTime); 
       }
-
+      if (portAndAction & HAL_KEY_RELEASE) {
+        LREPMaster("Key released\r\n");
+        uint32 holdTime = osal_getClock() - zclApp_State.pressTime;
+        LREP("holdTime = %d \r\n", holdTime);
+        zclApp_State.pressTime = 0;
+        if (holdTime >= 1) { //seconds
+          osal_start_reload_timer(zclApp_TaskID, APP_BTN_HOLD_EVT, 50);
+        }
+        else {
+          osal_start_reload_timer(zclApp_TaskID, APP_BTN_CLICK_EVT, 50);
+        }
+      } 
     }
 }
 
@@ -286,7 +296,7 @@ static void zclApp_RingRun(void) {
         }
         break; 
     case Droped:
-        if (zclApp_State.RingRunStep > 3) {
+        if (zclApp_State.RingRunStep > 1) {
             zclApp_RingEnd();
         }     
         break; 
@@ -379,9 +389,6 @@ static void zclApp_BtnClick(bool hold) {
         currentBtnClickPhase = 0;
         break;
     }
-    #if defined( ZIC_BATTERY_MODE )
-    zclBattery_Report();
-    #endif
 }
 
 static void zclApp_Report(void) {
