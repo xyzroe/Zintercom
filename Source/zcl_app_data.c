@@ -64,8 +64,8 @@ const uint8 zclApp_PowerSource = POWER_SOURCE_DC;
 #define DEFAULT_ModeOpen       Never 
 #define DEFAULT_ModeSound      TRUE 
 
-#define DEFAULT_TimeRing       3 //seconds to ring, before answer
-#define DEFAULT_TimeTalk       1 //seconds to talk, before open
+#define DEFAULT_TimeRing       7 //seconds to ring, before answer
+#define DEFAULT_TimeTalk       3 //seconds to talk, before open
 #define DEFAULT_TimeOpen       2 //seconds to hold open
 
 
@@ -81,6 +81,7 @@ application_config_t zclApp_Config = {
 device_state_t zclApp_State = {
     .State = Idle,
     .RingRunStep = 0,
+    .pressTime = 0,
 };
 
 
