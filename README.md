@@ -13,9 +13,13 @@ There are 4 work modes:
 3. `Always` - open door when intercom rings  
 4. `Drop` - hangs up all intercom rings, right after start  
 
-You can change the operating mode with z2m or by pressing the button.  
-After pressing the button, the LED will flash.  
+You can change the operating mode uisng z2m or by short press the button. (< 1000ms)  
+After pressing the button, the LED will flash at 4 Hz. 
 The number of flashes indicates the current operating mode.  
+
+You can control sound mode using z2m or by long press the button. (1000ms < X < 5000ms)  
+After pressing the button, the LED will flash at 1.5 Hz.  
+One flash - OFF, two flashes - ON.  
 
 ### How to join
 Reset to FN by reboot device 5 times with interval less than 10 seconds.  
