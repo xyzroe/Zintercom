@@ -146,7 +146,7 @@ const device = {
     model: 'DIYRuZ_Zintercom',
     vendor: 'DIYRuZ',
     description: '[Matrix intercom auto opener](https://diyruz.github.io/posts/zintercom/)',
-    icon: 'https://github.com/diyruz/Zintercom/blob/master/images/z2m.png?raw=true',
+    icon: 'https://raw.githubusercontent.com/diyruz/Zintercom/master/images/z2m.png',
     fromZigbee: [
         fromZigbeeConverters.battery,
         fz.diy_zintercom_config,
