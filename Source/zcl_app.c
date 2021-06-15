@@ -68,6 +68,7 @@ byte zclApp_TaskID;
  * LOCAL VARIABLES
  */
 
+static uint8 currentBtnClickPhase = 0;
 
 /*********************************************************************
  * LOCAL FUNCTIONS
@@ -155,7 +156,8 @@ static void zclApp_HandleKeys(byte portAndAction, byte keyCode) {
               LREPMaster("Ring start\r\n");
               //HalLedSet(LED_PIN, HAL_LED_MODE_BLINK);
               zclApp_State.RingRunStep = 1;
-              osal_start_reload_timer(zclApp_TaskID, APP_RING_RUN_EVT, 500);
+              //osal_start_reload_timer(zclApp_TaskID, APP_RING_RUN_EVT, 500);
+              osal_start_timerEx(zclApp_TaskID, APP_RING_RUN_EVT, 500);
               afAddrType_t inderect_DstAddr = {.addrMode = (afAddrMode_t)AddrNotPresent, .endPoint = 0, .addr.shortAddr = 0};
               zclGeneral_SendOnOff_CmdOn(zclApp_FirstEP.EndPoint, &inderect_DstAddr, FALSE, bdb_getZCLFrameCounter());
           }
@@ -176,10 +178,10 @@ static void zclApp_HandleKeys(byte portAndAction, byte keyCode) {
         LREP("holdTime = %d \r\n", holdTime);
         zclApp_State.pressTime = 0;
         if (holdTime >= 1) { //seconds
-          osal_start_reload_timer(zclApp_TaskID, APP_BTN_HOLD_EVT, 50);
+          osal_start_timerEx(zclApp_TaskID, APP_BTN_HOLD_EVT, 50);
         }
         else {
-          osal_start_reload_timer(zclApp_TaskID, APP_BTN_CLICK_EVT, 50);
+          osal_start_timerEx(zclApp_TaskID, APP_BTN_CLICK_EVT, 50);
         }
       } 
     }
@@ -254,7 +256,9 @@ uint16 zclApp_event_loop(uint8 task_id, uint16 events) {
     
     if (events & APP_BTN_HOLD_EVT) {
         LREPMaster("APP_BTN_HOLD_EVT\r\n");
-        zclApp_BtnClick(true);
+        #if !defined( ZIC_BATTERY_MODE )
+          zclApp_BtnClick(true);
+        #endif   
         return (events ^ APP_BTN_HOLD_EVT);
     }
     return 0;
@@ -266,6 +270,7 @@ static void zclApp_RingRun(void) {
     LREP("zclApp_State.RingRunStep %d\r\n", zclApp_State.RingRunStep);
     LREP("zclApp_State.State %d\r\n", zclApp_State.State);
     
+    osal_start_timerEx(zclApp_TaskID, APP_RING_RUN_EVT, 500);
     
     
     switch (zclApp_State.State) {
@@ -304,6 +309,7 @@ static void zclApp_RingRun(void) {
         }
         break; 
     case Droped:
+        osal_stop_timerEx(zclApp_TaskID, APP_RING_STOP_EVT);
         if (zclApp_State.RingRunStep > 1) {
             zclApp_RingEnd();
         }     
@@ -314,7 +320,7 @@ static void zclApp_RingRun(void) {
 
 static void zclApp_TalkStart(void) {
     LREPMaster("Talk start\r\n");
-    osal_stop_timerEx(zclApp_TaskID, APP_RING_STOP_EVT);
+    //osal_stop_timerEx(zclApp_TaskID, APP_RING_STOP_EVT);
     //osal_clear_event(zclApp_TaskID, APP_RING_STOP_EVT);
     zclApp_OneReport();
     HalLedSet(ANSWER_PIN, HAL_LED_MODE_ON);
@@ -332,8 +338,8 @@ static void zclApp_RingEnd(void) {
     HalLedSet(HANDSET_PIN, !zclApp_Config.ModeSound);
     HalLedSet(ANSWER_PIN, HAL_LED_MODE_OFF);
     osal_stop_timerEx(zclApp_TaskID, APP_RING_RUN_EVT);
-    osal_clear_event(zclApp_TaskID, APP_RING_RUN_EVT);
-    osal_stop_timerEx(zclApp_TaskID, APP_RING_STOP_EVT);
+    //osal_clear_event(zclApp_TaskID, APP_RING_RUN_EVT);
+    //osal_stop_timerEx(zclApp_TaskID, APP_RING_STOP_EVT);
     //osal_clear_event(zclApp_TaskID, APP_RING_STOP_EVT);
     zclApp_State.RingRunStep = 0;
     zclApp_State.State = Idle;
@@ -353,17 +359,13 @@ static void zclApp_RingEnd(void) {
 }
 
 static void zclApp_BtnClick(bool hold) {
-    
-    static uint8 currentBtnClickPhase = 0;
     LREP("currentBtnClickPhase %d\r\n", currentBtnClickPhase);
     switch (currentBtnClickPhase++) {
     case 0:
         if (hold) {
-            #if !defined( ZIC_BATTERY_MODE )
-              zclApp_Config.ModeSound = !zclApp_Config.ModeSound;
-              HalLedSet(HANDSET_PIN, !zclApp_Config.ModeSound);
-              HalLedSet(CATCH_PIN, !zclApp_Config.ModeSound);
-            #endif     
+            zclApp_Config.ModeSound = !zclApp_Config.ModeSound;
+            HalLedSet(HANDSET_PIN, !zclApp_Config.ModeSound);
+            HalLedSet(CATCH_PIN, !zclApp_Config.ModeSound);    
         }
         else {
             if (zclApp_Config.ModeOpen < Drop) {
@@ -385,7 +387,8 @@ static void zclApp_BtnClick(bool hold) {
             HalLedBlink(LED_PIN, zclApp_Config.ModeOpen+1, 50, 250);
         }
         break;
-    case 3:
+    default:
+        /*
         if (hold) {
             osal_stop_timerEx(zclApp_TaskID, APP_BTN_HOLD_EVT);
             osal_clear_event(zclApp_TaskID, APP_BTN_HOLD_EVT);
@@ -394,8 +397,17 @@ static void zclApp_BtnClick(bool hold) {
             osal_stop_timerEx(zclApp_TaskID, APP_BTN_CLICK_EVT);
             osal_clear_event(zclApp_TaskID, APP_BTN_CLICK_EVT);
         }
+        */
         currentBtnClickPhase = 0;
         break;
+    }
+    if (currentBtnClickPhase != 0) {
+      if (hold) {
+        osal_start_timerEx(zclApp_TaskID, APP_BTN_HOLD_EVT, 50);
+      }
+      else {
+        osal_start_timerEx(zclApp_TaskID, APP_BTN_CLICK_EVT, 50);
+      }
     }
 }
 
