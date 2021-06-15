@@ -21,6 +21,17 @@ You can control sound mode using z2m or by long press the button. (1000ms < X < 
 After pressing the button, the LED will flash at 1.5 Hz.  
 One flash - OFF, two flashes - ON.  
 
+  
+  
+## Important info
+In Gerber PCB v1.0 committed on Apr 14, there are some errors in the silkscreen layers:
+1. 'Line-' and 'Phone-' are reversed.
+2. '+' and '-' are also reversed.  
+
+Just plug by swapping.  
+  
+   
+   
 ### How to join
 Reset to FN by reboot device 5 times with interval less than 10 seconds.  
 Reset to FN by press and hold BTN for 5 seconds.  
@@ -83,7 +94,9 @@ For example, you can turn on the light while a call comes to the intercom, for n
 ### Files to reproduce
 * [Gerbers and BOM](https://github.com/diyruz/Zintercom/tree/master/hardware) by [xyzroe](https://t.me/xyzroe)  
 * [Firmware](https://github.com/diyruz/Zintercom/releases) by [xyzroe](https://t.me/xyzroe)  
+* [Case stl](https://www.thingiverse.com/thing:4866356) by [dreamertwo](https://t.me/dreamertwo) 
 
+![](https://cdn.thingiverse.com/assets/0b/2f/09/d3/37/large_display_2021-05-22_22-55-43.JPG)
 
 ### Inspired by
 The original scheme of the intercom opener by [Alexander Vaidurov](https://easyeda.com/Alex_AW/domofon-with-battery)  
