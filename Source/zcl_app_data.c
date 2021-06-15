@@ -67,7 +67,7 @@ const uint8 zclApp_PowerSource = POWER_SOURCE_DC;
 #define DEFAULT_TimeRing       7 //seconds to ring, before answer
 #define DEFAULT_TimeTalk       3 //seconds to talk, before open
 #define DEFAULT_TimeOpen       2 //seconds to hold open
-
+#define DEFAULT_TimeBell       3 //seconds after last bell to finish ring
 
 application_config_t zclApp_Config = {
     .ModeOpen = DEFAULT_ModeOpen,
@@ -75,6 +75,7 @@ application_config_t zclApp_Config = {
     .TimeRing = DEFAULT_TimeRing,
     .TimeTalk = DEFAULT_TimeTalk,
     .TimeOpen = DEFAULT_TimeOpen,
+    .TimeBell = DEFAULT_TimeBell,
     .TimeReport = DEFAULT_TimeReport,
 };
 
@@ -122,6 +123,7 @@ CONST zclAttrRec_t zclApp_AttrsFirstEP[] = {
     {ZCL_INTERCOM, {ATTRID_TIMERING, ZCL_UINT8, RW, (void *)&zclApp_Config.TimeRing}},
     {ZCL_INTERCOM, {ATTRID_TIMETALK, ZCL_UINT8, RW, (void *)&zclApp_Config.TimeTalk}},
     {ZCL_INTERCOM, {ATTRID_TIMEOPEN, ZCL_UINT8, RW, (void *)&zclApp_Config.TimeOpen}},
+    {ZCL_INTERCOM, {ATTRID_TIMEBELL, ZCL_UINT8, RW, (void *)&zclApp_Config.TimeBell}},
     {ZCL_INTERCOM, {ATTRID_TIMEREPORT, ZCL_UINT8, RW, (void *)&zclApp_Config.TimeReport}},
 };
 
@@ -157,5 +159,6 @@ void zclApp_ResetAttributesToDefaultValues(void) {
     zclApp_Config.TimeRing = DEFAULT_TimeRing;
     zclApp_Config.TimeTalk = DEFAULT_TimeTalk;
     zclApp_Config.TimeOpen  = DEFAULT_TimeOpen;
+    zclApp_Config.TimeBell  = DEFAULT_TimeBell;
     zclApp_Config.TimeReport  = DEFAULT_TimeReport;
 }

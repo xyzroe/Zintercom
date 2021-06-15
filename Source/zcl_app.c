@@ -138,15 +138,17 @@ static void zclApp_HandleKeys(byte portAndAction, byte keyCode) {
     
     if (portAndAction & 0x01) { //P0 Ring //S1 P0_1
       
-
-
+      //exit old stop timer
+      osal_stop_timerEx(zclApp_TaskID, APP_RING_STOP_EVT);
+      //osal_clear_event(zclApp_TaskID, APP_RING_STOP_EVT);
+      //start new stop timer (ring ends timer)
+      //osal_start_timerEx(zclApp_TaskID, APP_RING_STOP_EVT, 3000);
+      //zclApp_Config.TimeRing
+      uint32 TimeBell = (uint32)zclApp_Config.TimeBell *(uint32)1000;
+      osal_start_timerEx(zclApp_TaskID, APP_RING_STOP_EVT, (uint32)TimeBell);
       if (portAndAction & HAL_KEY_PRESS) {
 
-          //exit old stop timer
-          osal_stop_timerEx(zclApp_TaskID, APP_RING_STOP_EVT);
-          //osal_clear_event(zclApp_TaskID, APP_RING_STOP_EVT);
-          //start new stop timer (ring ends timer)
-          osal_start_timerEx(zclApp_TaskID, APP_RING_STOP_EVT, 3000);
+
         
           //start ring 
           if (zclApp_State.RingRunStep == 0) {

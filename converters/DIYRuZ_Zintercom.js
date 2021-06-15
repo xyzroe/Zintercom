@@ -82,6 +82,9 @@ const fz = {
           if (msg.data.hasOwnProperty(0x0055)) {
               result.time_open = msg.data[0x0055];
           }
+          if (msg.data.hasOwnProperty(0x0057)) {
+              result.time_bell = msg.data[0x0057];
+          }
           if (msg.data.hasOwnProperty(0x0056)) {
               result.time_report = msg.data[0x0056];
           }
@@ -92,7 +95,7 @@ const fz = {
 
 const tz = {
   diy_zintercom_config: {
-      key: ['state', 'mode', 'sound', 'time_ring', 'time_talk', 'time_open', 'time_report'],
+      key: ['state', 'mode', 'sound', 'time_ring', 'time_talk', 'time_open', 'time_bell', 'time_report'],
       convertSet: async (entity, key, rawValue, meta) => {
           const lookup = {
               'OFF': 0x00,
@@ -118,6 +121,7 @@ const tz = {
               time_ring: {0x0053: {value, type: 0x20}},
               time_talk: {0x0054: {value, type: 0x20}},
               time_open: {0x0055: {value, type: 0x20}},
+              time_bell: {0x0057: {value, type: 0x20}},
               time_report: {0x0056: {value, type: 0x20}},
           };
 
@@ -134,6 +138,7 @@ const tz = {
               time_ring: ['closuresDoorLock', 0x0053],
               time_talk: ['closuresDoorLock', 0x0054],
               time_open: ['closuresDoorLock', 0x0055],
+              time_bell: ['closuresDoorLock', 0x0057],
               time_report: ['closuresDoorLock', 0x0056],
           };
           await entity.read(payloads[key][0], [payloads[key][1]]);
@@ -193,10 +198,11 @@ const device = {
             .withDescription('Time to hold before open'),
         exposes.numeric('time_open', ea.ALL).withUnit('sec')
             .withDescription('Time to open before end'),
+        exposes.numeric('time_bell', ea.ALL).withUnit('sec')
+            .withDescription('Time after last bell to finish ring'),
         exposes.numeric('time_report', ea.ALL).withUnit('min')
             .withDescription('Reporting interval'),
         ep.battery(),
-        ep.linkquality(),
     ],
 };
 

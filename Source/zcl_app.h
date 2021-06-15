@@ -53,6 +53,7 @@ extern "C" {
 #define ATTRID_TIMERING             0x0053                                  
 #define ATTRID_TIMETALK             0x0054
 #define ATTRID_TIMEOPEN             0x0055
+#define ATTRID_TIMEBELL             0x0057
 #define ATTRID_TIMEREPORT           0x0056
 
 #define LED_PIN         HAL_LED_1
@@ -107,6 +108,7 @@ typedef struct {
     uint8 TimeRing;
     uint8 TimeTalk;
     uint8 TimeOpen;
+    uint8 TimeBell;
     uint8 TimeReport;
 } application_config_t;
 
