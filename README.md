@@ -24,12 +24,22 @@ One flash - OFF, two flashes - ON.
   
   
 ## Important info
+#### 1
 In Gerber PCB v1.0 committed on Apr 14, there are some errors in the silkscreen layers:
 1. 'Line-' and 'Phone-' are reversed.
 2. '+' and '-' are also reversed.  
 
 Just plug by swapping.  
   
+#### 2
+The problem of cross-calls to other apartments:  
+it was revealed that the intercom circuit is closed through the reverse diode of the u2 transitor (thanks to @Alex_AW)  
+to prevent it, you need to add a diode according to the diagram:  
+![](/images/fix_error_rings.png)  
+
+#### 3
+If you want to use the battery version without a handset, do not turn off the sound in z2m, but use an external resistor to emulate the intercom handset, according to the diagram:  
+![](/images/battery_no_handset.png)    
    
    
 ### How to join
