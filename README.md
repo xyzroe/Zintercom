@@ -71,6 +71,8 @@ Converter file located [here](https://github.com/diyruz/Zintercom/blob/master/co
 
 ### DC Power  
 
+5-10 V  
+  
 Support `router` and `end device` modes.  
 Install `E18-MS1PA1`, `E18-MS1PA2` or `E18-MS1-PCB`.   
 
@@ -81,6 +83,8 @@ Install `E18-MS1PA1`, `E18-MS1PA2` or `E18-MS1-PCB`.
 
 ### Battery Power  
 
+2 * AAA batteries  
+  
 Support only `end device` mode.  
 Install `E18-MS1-PCB` only!  
 
