@@ -1,4 +1,8 @@
-# Zintercom  
+# Zintercom
+
+## How to compile
+Follow this article https://zigdevwiki.github.io/Begin/IAR_install/
+
 ##### Zigbee Intercom Automator  
 This device is designed to control the matrix intercom using Zigbee.
 
