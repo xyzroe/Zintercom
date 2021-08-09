@@ -1,23 +1,27 @@
-# Zintercom  
+# Zintercom
+
+## How to compile
+Follow this article https://zigdevwiki.github.io/Begin/IAR_install/
+
 ##### Zigbee Intercom Automator  
 This device is designed to control the matrix intercom using Zigbee.
 
 Using zigbee2mqtt you can:
-1. Receive notification when the intercom rings. (also support **direct bind**)
+1. Receive a notification when the intercom rings. (also support **direct bind**)
 2. Mute the sound on the intercom handset.
 3. Automatically or manually open the door or hang up when the intercom rings.
 
 There are 4 work modes:  
-1. `Never` - ordinary work mode, use handset to control  
-2. `Once` - one time open door when intercom rings  
+1. `Never` - ordinary work mode, use a handset to control  
+2. `Once` - one-time open door when intercom rings  
 3. `Always` - open door when intercom rings  
-4. `Drop` - hangs up all intercom rings, right after start  
+4. `Drop` - hangs up all intercom rings, right after the start  
 
-You can change the operating mode uisng z2m or by short press the button. (< 1000ms)  
+You can change the operating mode using z2m or by short press the button. (< 1000ms)  
 After pressing the button, the LED will flash at 4 Hz. 
 The number of flashes indicates the current operating mode.  
 
-You can control sound mode using z2m or by long press the button. (1000ms < X < 5000ms)  
+You can control sound mode using z2m or by long-press the button. (1000ms < X < 5000ms)  
 After pressing the button, the LED will flash at 1.5 Hz.  
 One flash - OFF, two flashes - ON.  
 
@@ -33,7 +37,7 @@ Just plug by swapping.
   
 #### 2
 The problem of cross-calls to other apartments:  
-it was revealed that the intercom circuit is closed through the reverse diode of the u2 transitor (thanks to @Alex_AW)  
+it was revealed that the intercom circuit is closed through the reverse diode of the u2 transistor (thanks to @Alex_AW)  
 to prevent it, you need to add a diode according to the diagram:  
 ![](/images/fix_error_rings.png)  
 
@@ -43,8 +47,8 @@ If you want to use the battery version without a handset, do not turn off the so
    
    
 ### How to join
-Reset to FN by reboot device 5 times with interval less than 10 seconds.  
-Reset to FN by press and hold BTN for 5 seconds.  
+Reset to FN by reboot the device 5 times with intervals of less than 10 seconds.  
+Reset to FN by pressing and holding BTN for 5 seconds.  
 
 LED will flash during reset.  
 
@@ -91,7 +95,7 @@ Install `E18-MS1-PCB` only!
 Do not turn off `sound` because it turns U2 forever, which will drain the battery much faster.
 
 Since the device is in sleep mode, it cannot receive commands.  
-But you have the ability to set the button mode or at the time of the call.  
+But you can set the button mode or at the time of the call.  
 
 If any commands are in the coordinator's queue, they will be executed after a button is pressed or a call is received.
 
@@ -100,7 +104,7 @@ If any commands are in the coordinator's queue, they will be executed after a bu
 ##### The mode set by the Zigbee command `overwrites` the mode set by the button.
 
 ### Binding
-The device supports direct binding of an incoming call to the onOff cluster.  
+The device supports the direct binding of an incoming call to the onOff cluster.  
 
 For example, you can turn on the light while a call comes to the intercom, for notification in mute mode.
 
