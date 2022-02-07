@@ -142,11 +142,11 @@
                 <option>
                     <name>Input variant</name>
                     <version>2</version>
-                    <state>0</state>
+                    <state>5</state>
                 </option>
                 <option>
                     <name>Input description</name>
-                    <state>Automatic choice of formatter.</state>
+                    <state>No float.</state>
                 </option>
                 <option>
                     <name>Output variant</name>
@@ -1284,11 +1284,11 @@
                 <option>
                     <name>Input variant</name>
                     <version>2</version>
-                    <state>0</state>
+                    <state>5</state>
                 </option>
                 <option>
                     <name>Input description</name>
-                    <state>Automatic choice of formatter.</state>
+                    <state>No float.</state>
                 </option>
                 <option>
                     <name>Output variant</name>
@@ -1604,7 +1604,7 @@
                 <option>
                     <name>Compiler Extra Options Edit</name>
                     <state>-f $PROJ_DIR$\..\..\..\Tools\CC2530DB\f8wRouter.cfg</state>
-                    <state>-f $PROJ_DIR$\..\..\..\Tools\CC2530DB\f8wConfig.cfg</state>
+                    <state>-f $PROJ_DIR$\..\zstack-lib\f8wConfig.cfg</state>
                     <state>-f $PROJ_DIR$\..\..\..\Tools\CC2530DB\f8wZCL.cfg</state>
                 </option>
                 <option>
@@ -3704,7 +3704,7 @@
                 </option>
                 <option>
                     <name>OGChipConfigPath</name>
-                    <state>$TOOLKIT_DIR$\config\devices\Texas Instruments\CC2530F256.i51</state>
+                    <state>$TOOLKIT_DIR$\config\devices\Texas Instruments\CC25xx\3x\CC2530F256.i51</state>
                 </option>
             </data>
         </settings>
@@ -3887,7 +3887,7 @@
                 <option>
                     <name>Compiler Extra Options Edit</name>
                     <state>-f $PROJ_DIR$\..\..\..\Tools\CC2530DB\f8wRouter.cfg</state>
-                    <state>-f $PROJ_DIR$\..\..\..\Tools\CC2530DB\f8wConfig.cfg</state>
+                    <state>-f $PROJ_DIR$\..\zstack-lib\f8wConfig.cfg</state>
                     <state>-f $PROJ_DIR$\..\..\..\Tools\CC2530DB\f8wZCL.cfg</state>
                 </option>
                 <option>
@@ -5989,7 +5989,7 @@
                 </option>
                 <option>
                     <name>OGChipConfigPath</name>
-                    <state>$TOOLKIT_DIR$\config\devices\Texas Instruments\CC2530F256.i51</state>
+                    <state>$TOOLKIT_DIR$\config\devices\Texas Instruments\CC25xx\3x\CC2530F256.i51</state>
                 </option>
             </data>
         </settings>
@@ -6174,7 +6174,7 @@
                 <option>
                     <name>Compiler Extra Options Edit</name>
                     <state>-f $PROJ_DIR$\..\..\..\Tools\CC2530DB\f8wRouter.cfg</state>
-                    <state>-f $PROJ_DIR$\..\..\..\Tools\CC2530DB\f8wConfig.cfg</state>
+                    <state>-f $PROJ_DIR$\..\zstack-lib\f8wConfig.cfg</state>
                     <state>-f $PROJ_DIR$\..\..\..\Tools\CC2530DB\f8wZCL.cfg</state>
                 </option>
                 <option>
@@ -8276,7 +8276,7 @@
                 </option>
                 <option>
                     <name>OGChipConfigPath</name>
-                    <state>$TOOLKIT_DIR$\config\devices\Texas Instruments\CC2530F256.i51</state>
+                    <state>$TOOLKIT_DIR$\config\devices\Texas Instruments\CC25xx\3x\CC2530F256.i51</state>
                 </option>
             </data>
         </settings>
@@ -8461,7 +8461,7 @@
                 <option>
                     <name>Compiler Extra Options Edit</name>
                     <state>-f $PROJ_DIR$\..\..\..\Tools\CC2530DB\f8wRouter.cfg</state>
-                    <state>-f $PROJ_DIR$\..\..\..\Tools\CC2530DB\f8wConfig.cfg</state>
+                    <state>-f $PROJ_DIR$\..\zstack-lib\f8wConfig.cfg</state>
                     <state>-f $PROJ_DIR$\..\..\..\Tools\CC2530DB\f8wZCL.cfg</state>
                 </option>
                 <option>
@@ -9687,7 +9687,7 @@
             <name>$PROJ_DIR$\..\..\..\Tools\CC2530DB\f8w2530.xcl</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\Tools\CC2530DB\f8wConfig.cfg</name>
+            <name>$PROJ_DIR$\..\zstack-lib\f8wConfig.cfg</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\Tools\CC2530DB\f8wCoord.cfg</name>
