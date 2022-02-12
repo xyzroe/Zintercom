@@ -42,20 +42,29 @@
 #endif
 
 #if defined( HAL_BOARD_TARGET )
+    // Income ring - P0_0
+    #define KEY_INCOME_PORT HAL_KEY_PORT0
     #define HAL_KEY_P0_INPUT_PINS BV(0)
     #define HAL_KEY_P0_INPUT_PINS_EDGE HAL_KEY_RISING_EDGE
+    // Button - P2_0
+    #define KEY1_PORT HAL_KEY_PORT2
     #define HAL_KEY_P2_INPUT_PINS BV(0)
     #define HAL_KEY_P2_INPUT_PINS_EDGE HAL_KEY_FALLING_EDGE
     #define INT_HEAP_LEN 2200//2256
 #elif defined( HAL_BOARD_CHDTECH_DEV )
+    // Income ring - P0_1
+    #define KEY_INCOME_PORT HAL_KEY_PORT0
     #define HAL_KEY_P0_INPUT_PINS BV(1)
     #define HAL_KEY_P0_INPUT_PINS_EDGE HAL_KEY_FALLING_EDGE
+    // Button - P2_0
+    #define KEY1_PORT HAL_KEY_PORT2
     #define HAL_KEY_P2_INPUT_PINS BV(0)
     #define HAL_KEY_P2_INPUT_PINS_EDGE HAL_KEY_FALLING_EDGE
     #define DO_DEBUG_UART
     #define INT_HEAP_LEN 2060
 #endif
 
+#define BTN_HOLD_TIME 1000
 #define FACTORY_RESET_HOLD_TIME_LONG 5000
 
 #if defined( DO_DEBUG_UART )

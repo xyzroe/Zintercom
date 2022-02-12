@@ -136,7 +136,7 @@ static void zclApp_HandleKeys(byte portAndAction, byte keyCode) {
     //LREP("zclApp_HandleKeys portAndAction=0x%X keyCode=0x%X\r\n", portAndAction, keyCode);
     //zclCommissioning_HandleKeys(portAndAction, keyCode);
     
-    if (portAndAction & 0x01) { //P0 Ring //S1 P0_1
+    if (portAndAction & KEY_INCOME_PORT) { //P0 Ring //S1 P0_1  TODO add check Income pin
       
       //exit old stop timer
       osal_stop_timerEx(zclApp_TaskID, APP_RING_STOP_EVT);
@@ -167,25 +167,25 @@ static void zclApp_HandleKeys(byte portAndAction, byte keyCode) {
       
     }
 
-    if (portAndAction & 0x04) { //P2 Btn //S2 P2_0
+    if (portAndAction & KEY1_PORT) { //P2 Btn //S2 P2_0  TODO add check BUTTON pin
       zclFactoryResetter_HandleKeys(portAndAction, keyCode);
       if (portAndAction & HAL_KEY_PRESS) {
         LREPMaster("Key pressed\r\n");
-	zclApp_State.pressTime = osal_getClock();
-        LREP("pressTime = %d\r\n", zclApp_State.pressTime); 
+	zclApp_State.pressTime = osal_GetSystemClock();
+        LREP("pressTime = %ld\r\n", zclApp_State.pressTime);
       }
       if (portAndAction & HAL_KEY_RELEASE) {
         LREPMaster("Key released\r\n");
-        uint32 holdTime = osal_getClock() - zclApp_State.pressTime;
-        LREP("holdTime = %d \r\n", holdTime);
-        zclApp_State.pressTime = 0;
-        if (holdTime >= 1) { //seconds
+        uint32 holdTime = osal_GetSystemClock() - zclApp_State.pressTime;
+        LREP("holdTime = %ld \r\n", holdTime);
+        if (zclApp_State.pressTime != 0 && holdTime >= BTN_HOLD_TIME) { // check release without press and hold milliseconds
           osal_start_timerEx(zclApp_TaskID, APP_BTN_HOLD_EVT, 50);
         }
         else {
           osal_start_timerEx(zclApp_TaskID, APP_BTN_CLICK_EVT, 50);
         }
-      } 
+        zclApp_State.pressTime = 0;
+      }
     }
 }
 
