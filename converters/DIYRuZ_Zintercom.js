@@ -14,10 +14,6 @@ const bind = async (endpoint, target, clusters) => {
 };
 
 const configureReporting = {
-    currentPositionLiftPercentage: async (endpoint, overrides) => {
-        const payload = configureReportingPayload('currentPositionLiftPercentage', 1, repInterval.MAX, 1, overrides);
-        await endpoint.configureReporting('closuresWindowCovering', payload);
-    },
     batteryPercentageRemaining: async (endpoint, overrides) => {
         const payload = configureReportingPayload(
             'batteryPercentageRemaining', repInterval.HOUR, repInterval.MAX, 0, overrides,
@@ -69,6 +65,18 @@ const fz = {
           }
           if (msg.data.hasOwnProperty(0x0051)) {
               result.mode = ['Never', 'Once', 'Always', 'Drop'][msg.data[0x0051]];
+              result.once = 'OFF';
+              result.always = 'OFF';
+              result.drop = 'OFF';
+              if (msg.data[0x0051] == 1) {
+                result.once = 'ON';
+              }
+              if (msg.data[0x0051] == 2) {
+                result.always = 'ON';
+              }
+              if (msg.data[0x0051] == 3) {
+                result.drop = 'ON';
+              }
           }
           if (msg.data.hasOwnProperty(0x0052)) {
               result.sound = ['OFF', 'ON'][msg.data[0x0052]];
@@ -95,7 +103,7 @@ const fz = {
 
 const tz = {
   diy_zintercom_config: {
-      key: ['state', 'mode', 'sound', 'time_ring', 'time_talk', 'time_open', 'time_bell', 'time_report'],
+      key: ['state', 'mode', 'sound', 'once', 'always', 'drop', 'time_ring', 'time_talk', 'time_open', 'time_bell', 'time_report'],
       convertSet: async (entity, key, rawValue, meta) => {
           const lookup = {
               'OFF': 0x00,
@@ -115,9 +123,24 @@ const tz = {
               value = modeOpenLookup.hasOwnProperty(rawValue) ? modeOpenLookup[rawValue] : parseInt(rawValue, 10);
           }
 
+          if (key == 'once') {
+              value = (rawValue == 'ON') ? 1 : 0;
+          }
+
+          if (key == 'always') {
+              value = (rawValue == 'ON') ? 2 : 0;
+          }
+
+          if (key == 'drop') {
+              value = (rawValue == 'ON') ? 3 : 0;
+          }
+
           const payloads = {
               mode: {0x0051: {value, type: 0x30}},
               sound: {0x0052: {value, type: 0x10}},
+              once: {0x0051: {value, type: 0x30}},
+              always: {0x0051: {value, type: 0x30}},
+              drop: {0x0051: {value, type: 0x30}},
               time_ring: {0x0053: {value, type: 0x20}},
               time_talk: {0x0054: {value, type: 0x20}},
               time_open: {0x0055: {value, type: 0x20}},
@@ -126,6 +149,17 @@ const tz = {
           };
 
           await entity.write('closuresDoorLock', payloads[key]);
+
+          if (key === 'once'||'always'||'drop'||'mode') {
+              const payloads = {
+                  mode: ['closuresDoorLock', 0x0051],
+                  once: ['closuresDoorLock', 0x0051],
+                  always: ['closuresDoorLock', 0x0051],
+                  drop: ['closuresDoorLock', 0x0051],
+              };
+              await entity.read(payloads[key][0], [payloads[key][1]]);
+          }
+
           return {
               state: {[key]: rawValue},
           };
@@ -135,6 +169,9 @@ const tz = {
               state: ['closuresDoorLock', 0x0050],
               mode: ['closuresDoorLock', 0x0051],
               sound: ['closuresDoorLock', 0x0052],
+              once: ['closuresDoorLock', 0x0051],
+              always: ['closuresDoorLock', 0x0051],
+              drop: ['closuresDoorLock', 0x0051],
               time_ring: ['closuresDoorLock', 0x0053],
               time_talk: ['closuresDoorLock', 0x0054],
               time_open: ['closuresDoorLock', 0x0055],
@@ -192,6 +229,12 @@ const device = {
             .withDescription('Select open mode'),
         exposes.binary('sound', ea.ALL, 'ON', 'OFF').withProperty('sound')
             .withDescription('Enable or disable sound'),
+        exposes.binary('once', ea.ALL, 'ON', 'OFF').withProperty('once')
+            .withDescription('Enable or disable once mode'),
+        exposes.binary('always', ea.ALL, 'ON', 'OFF').withProperty('always')
+            .withDescription('Enable or disable always mode'),
+        exposes.binary('drop', ea.ALL, 'ON', 'OFF').withProperty('drop')
+            .withDescription('Enable or disable drop mode'),
         exposes.numeric('time_ring', ea.ALL).withUnit('sec')
             .withDescription('Time to ring before answer'),
         exposes.numeric('time_talk', ea.ALL).withUnit('sec')
