@@ -106,8 +106,8 @@ const tz = {
       key: ['state', 'mode', 'sound', 'once', 'always', 'drop', 'time_ring', 'time_talk', 'time_open', 'time_bell', 'time_report'],
       convertSet: async (entity, key, rawValue, meta) => {
           const lookup = {
-              'OFF': 0x00,
-              'ON': 0x01,
+              'OFF': '0',
+              'ON': '1',
           };
           const modeOpenLookup = {
               'Never': '0',
@@ -150,7 +150,7 @@ const tz = {
 
           await entity.write('closuresDoorLock', payloads[key]);
 
-          if (key === 'once'||'always'||'drop'||'mode') {
+          if (key == 'once' || key == 'always' || key == 'drop' || key == 'mode') {
               const payloads = {
                   mode: ['closuresDoorLock', 0x0051],
                   once: ['closuresDoorLock', 0x0051],
