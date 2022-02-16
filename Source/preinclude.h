@@ -56,7 +56,7 @@
     #define INT_HEAP_LEN 2060
 #endif
 
-#define FACTORY_RESET_HOLD_TIME_LONG 5000
+#define FACTORY_RESET_HOLD_TIME_LONG 10000
 
 #if defined( DO_DEBUG_UART )
     #define HAL_UART_ISR 2
