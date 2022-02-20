@@ -61,7 +61,7 @@ extern "C" {
 #define BLUE_LED_PIN            HAL_LED_1
 #define GREEN_LED_PIN           HAL_LED_2
 #define RED_LED_PIN             HAL_LED_3
-//#define HANDSET_PIN     HAL_LED_4
+#define OLDLED_PIN              HAL_LED_4
    
 #define CATCH_O_PIN             P0_1
 #define ANSWER_O_PIN            P0_2
