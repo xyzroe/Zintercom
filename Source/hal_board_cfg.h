@@ -61,30 +61,29 @@
 #define HAL_LED_BLINK_DELAY()   st( { volatile uint32 i; for (i=0; i<0x5800; i++) { }; } )
 
 #if defined(HAL_BOARD_TARGET)
- //blue
+// blue
   #define LED1_BV           BV(7)
   #define LED1_SBIT         P1_7
   #define LED1_DDR          P1DIR
   #define LED1_POLARITY     ACTIVE_HIGH
-//green
+// green
   #define LED2_BV           BV(6)
   #define LED2_SBIT         P1_6
   #define LED2_DDR          P1DIR
   #define LED2_POLARITY     ACTIVE_HIGH
-//red
+// red
   #define LED3_BV           BV(5)
   #define LED3_SBIT         P1_5
   #define LED3_DDR          P1DIR
   #define LED3_POLARITY     ACTIVE_HIGH
-//NC
-  #define LED4_BV           BV(3)
-  #define LED4_SBIT         P0_3
-  #define LED4_DDR          P1DIR
+// old led
+  #define LED4_BV           BV(4)
+  #define LED4_SBIT         P0_4
+  #define LED4_DDR          P0DIR
   #define LED4_POLARITY     ACTIVE_HIGH
 
-
 #elif defined(HAL_BOARD_CHDTECH_DEV)
- //blue//d3
+//blue//d3
   #define LED1_BV           BV(4)
   #define LED1_SBIT         P1_4
   #define LED1_DDR          P1DIR
