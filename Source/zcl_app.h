@@ -24,6 +24,8 @@ extern "C" {
 #define APP_BTN_HOLD_EVT 0x0010
 #define APP_RING_STOP_EVT 0x0020
 #define APP_TALK_START_EVT 0x0040
+#define APP_WORK_LED_EVT 0x0080
+#define APP_BTN_DOUBLE_EVT 0x0100
   
 /*********************************************************************
  * MACROS
@@ -56,10 +58,14 @@ extern "C" {
 #define ATTRID_TIMEBELL             0x0057
 #define ATTRID_TIMEREPORT           0x0056
 
-#define LED_PIN         HAL_LED_1
-#define CATCH_PIN       HAL_LED_2
-#define ANSWER_PIN      HAL_LED_3
-#define HANDSET_PIN     HAL_LED_4
+#define BLUE_LED_PIN            HAL_LED_1
+#define GREEN_LED_PIN           HAL_LED_2
+#define RED_LED_PIN             HAL_LED_3
+//#define HANDSET_PIN     HAL_LED_4
+   
+#define CATCH_O_PIN             P0_1
+#define ANSWER_O_PIN            P0_2
+#define HANDSET_O_PIN           P0_3
 
 #define TIMER_RESTART           TRUE
 #define TIMER_START             FALSE
@@ -116,6 +122,7 @@ typedef struct {
     WorkState_t State;
     uint8 RingRunStep;
     uint32 pressTime;
+    byte clicks;
 } device_state_t;
 
 
