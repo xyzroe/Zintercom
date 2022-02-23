@@ -58,15 +58,6 @@ extern "C" {
 #define ATTRID_TIMEBELL             0x0057
 #define ATTRID_TIMEREPORT           0x0056
 
-#define BLUE_LED_PIN            HAL_LED_1
-#define GREEN_LED_PIN           HAL_LED_2
-#define RED_LED_PIN             HAL_LED_3
-#define OLDLED_PIN              HAL_LED_4
-   
-#define CATCH_O_PIN             P0_1
-#define ANSWER_O_PIN            P0_2
-#define HANDSET_O_PIN           P0_3
-
 #define TIMER_RESTART           TRUE
 #define TIMER_START             FALSE
 
