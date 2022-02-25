@@ -140,6 +140,7 @@
 #define RED_LED             HAL_LED_3
 #define OLD_LED             HAL_LED_4
 
+#define INFO_LED            HAL_LED_1 | HAL_LED_4
 
 /* ------------------------------------------------------------------------------------------------
  *                                    Push Button Configuration

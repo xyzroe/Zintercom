@@ -68,7 +68,7 @@
 #define FACTORY_RESET_HOLD_TIME_LONG 10000
 
 #if defined( DO_DEBUG_UART )
-    #define HAL_UART_ISR 2
+    #define HAL_UART_ISR 0
     #define HAL_UART TRUE
     #define HAL_UART_DMA 1
 #endif

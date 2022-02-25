@@ -379,7 +379,7 @@ static void zclApp_WorkWithLEDs(void) {
     HalLedSet(GREEN_LED, HAL_LED_MODE_OFF);
   }
   if (zclApp_Config.ModeOpen == Once) {
-    HalLedBlink(GREEN_LED, 0, 90, 1000);
+    HalLedBlink(GREEN_LED, 0, 96, 1000);
   }
   if (zclApp_Config.ModeOpen == Drop) {
     HalLedSet(RED_LED, HAL_LED_MODE_ON);
@@ -388,7 +388,7 @@ static void zclApp_WorkWithLEDs(void) {
     HalLedSet(RED_LED, HAL_LED_MODE_OFF);
   }
   if (zclApp_State.State != Idle) {
-    HalLedBlink(RED_LED, 0, 90, 1000);
+    HalLedSet(RED_LED, HAL_LED_MODE_BLINK);
   }
   if (zclApp_Config.ModeSound == true) {
     HalLedSet(BLUE_LED, HAL_LED_MODE_OFF);
