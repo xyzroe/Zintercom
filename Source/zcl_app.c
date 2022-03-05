@@ -124,7 +124,6 @@ void zclApp_Init(byte task_id) {
     zclApp_ConfigInit(TIMER_START);
     
     zclApp_ControlPinsInit();
-    osal_start_timerEx(zclApp_TaskID, APP_WORK_LED_EVT, 100);
 
     IO_IMODE_PORT_PIN(0,0,IO_TRI);
         
@@ -289,6 +288,7 @@ static void zclApp_RingRun(void) {
     LREP("zclApp_State.State %d\r\n", zclApp_State.State);
     
     osal_start_timerEx(zclApp_TaskID, APP_RING_RUN_EVT, 500);
+    osal_start_timerEx(zclApp_TaskID, APP_WORK_LED_EVT, 50);
 
     switch (zclApp_State.State) {
     case Idle:
@@ -353,6 +353,7 @@ static void zclApp_RingEnd(void) {
     HANDSET_PIN = !zclApp_Config.ModeSound;
     ANSWER_PIN = 0;
     osal_stop_timerEx(zclApp_TaskID, APP_RING_RUN_EVT);
+    osal_start_timerEx(zclApp_TaskID, APP_WORK_LED_EVT, 50);
     zclApp_State.RingRunStep = 0;
     zclApp_State.State = Idle;
     
@@ -396,11 +397,12 @@ static void zclApp_WorkWithLEDs(void) {
   else {
     HalLedSet(BLUE_LED, HAL_LED_MODE_ON);
   }
-  osal_start_timerEx(zclApp_TaskID, APP_WORK_LED_EVT, 1000);
 }
 
 static void zclApp_BtnClicks(byte count) {
     zclApp_State.clicks = 0;
+    osal_start_timerEx(zclApp_TaskID, APP_WORK_LED_EVT, 50);
+
     switch (count) {
     case 1:
         LREPMaster("Button click\r\n");
@@ -466,7 +468,7 @@ static void zclApp_BasicResetCB(void) {
 
 static ZStatus_t zclApp_ReadWriteAuthCB(afAddrType_t *srcAddr, zclAttrRec_t *pAttr, uint8 oper) {
     LREPMaster("AUTH CB called\r\n");
-    osal_start_timerEx(zclApp_TaskID, APP_SAVE_ATTRS_EVT, 2000);
+    osal_start_timerEx(zclApp_TaskID, APP_SAVE_ATTRS_EVT, 200);
     return ZSuccess;
 }
 
@@ -484,7 +486,8 @@ static void zclApp_ConfigInit(bool restart) {
     uint32 ReportInterval = (uint32)zclApp_Config.TimeReport * (uint32)60;
     LREP("Start report with interval %d seconds\r\n", ReportInterval);
     osal_start_reload_timer(zclApp_TaskID, APP_REPORT_EVT, ((uint32)ReportInterval*(uint32)1000));
- 
+    osal_start_timerEx(zclApp_TaskID, APP_WORK_LED_EVT, 50);
+
     HANDSET_PIN = !zclApp_Config.ModeSound;
     CATCH_PIN = !zclApp_Config.ModeSound;
     ANSWER_PIN = 0;
