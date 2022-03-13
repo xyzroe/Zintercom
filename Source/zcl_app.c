@@ -173,8 +173,10 @@ static void zclApp_HandleKeys(byte portAndAction, byte keyCode) {
     if (portAndAction & KEY1_PORT) { //P2 Btn //S2 P2_0  TODO add check BUTTON pin
       zclFactoryResetter_HandleKeys(portAndAction, keyCode);
       if (portAndAction & HAL_KEY_PRESS) {
-        LREPMaster("Key pressed\r\n");
-        zclApp_State.clicks++;
+        LREP("Key pressed. Clicks - %d\r\n", zclApp_State.clicks);
+        if (zclApp_State.clicks < 2) {
+            zclApp_State.clicks++;
+        }
 
         osal_start_timerEx(zclApp_TaskID, APP_BTN_HOLD_EVT, BTN_HOLD_TIME);
         osal_stop_timerEx(zclApp_TaskID, APP_BTN_CLICK_EVT);
@@ -187,7 +189,7 @@ static void zclApp_HandleKeys(byte portAndAction, byte keyCode) {
           osal_start_timerEx(zclApp_TaskID, APP_BTN_CLICK_EVT, 250);
         }
         if (zclApp_State.clicks == 2) {
-          osal_start_timerEx(zclApp_TaskID, APP_BTN_DOUBLE_EVT, 250);
+          osal_start_timerEx(zclApp_TaskID, APP_BTN_DOUBLE_EVT, 50);
         }
       } 
     }
