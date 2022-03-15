@@ -58,6 +58,14 @@
  * GLOBAL VARIABLES
  */
 byte zclApp_TaskID;
+#if defined( ZIC_BATTERY_MODE )
+static byte isRingOn = false;
+static byte isLedOn = false;
+#endif
+
+// for Old LED
+static byte showMode = false;
+static byte showSound = false;
 
 /*********************************************************************
  * GLOBAL FUNCTIONS
@@ -80,7 +88,6 @@ static void zclApp_HandleKeys(byte portAndAction, byte keyCode);
 static void zclApp_ControlPinsInit(void);
 static ZStatus_t zclApp_ReadWriteAuthCB(afAddrType_t *srcAddr, zclAttrRec_t *pAttr, uint8 oper);
 
-static void zclApp_Report(void);
 static void zclApp_OneReport(void);
 static void zclApp_ConfigInit(bool restart);
 
@@ -160,6 +167,7 @@ static void zclApp_HandleKeys(byte portAndAction, byte keyCode) {
           if (zclApp_State.RingRunStep == 0) {
               #if defined( ZIC_BATTERY_MODE )
                 osal_pwrmgr_task_state(zclApp_TaskID, PWRMGR_HOLD);
+                isRingOn = true;
               #endif    
               LREPMaster("Ring start\r\n");
               zclApp_State.RingRunStep = 1;
@@ -225,7 +233,7 @@ uint16 zclApp_event_loop(uint8 task_id, uint16 events) {
     }
     if (events & APP_REPORT_EVT) {
         LREPMaster("APP_REPORT_EVT\r\n");
-        zclApp_Report();
+        zclApp_OneReport();
         return (events ^ APP_REPORT_EVT);
     }
 
@@ -369,12 +377,41 @@ static void zclApp_RingEnd(void) {
     
     #if defined( ZIC_BATTERY_MODE )
       zclBattery_Report();
-      osal_pwrmgr_task_state(zclApp_TaskID, PWRMGR_CONSERVE);
-    #endif    
+      isRingOn = false;
+      if (isLedOn == false) {
+          osal_pwrmgr_task_state(zclApp_TaskID, PWRMGR_CONSERVE);
+      }
+    #endif
 }
 
-
 static void zclApp_WorkWithLEDs(void) {
+#if defined( ZIC_BATTERY_MODE )
+    if (isLedOn != false) { // Off LEDs and goto sleep
+        isLedOn = false;
+        HalLedSet(HAL_LED_ALL, HAL_LED_MODE_OFF);
+        if (isRingOn == false) {
+            osal_pwrmgr_task_state(zclApp_TaskID, PWRMGR_CONSERVE);
+        }
+        return;
+    }
+    // On LEDs and hold power 2 sec.
+    isLedOn = true;
+    osal_pwrmgr_task_state(zclApp_TaskID, PWRMGR_HOLD);
+    osal_start_timerEx(zclApp_TaskID, APP_WORK_LED_EVT, 2000);
+#endif
+
+    if (showSound & showMode) {
+        showSound = false;
+        showMode = false;
+        HalLedBlink(OLD_LED, 1, 99, 2000);
+    } else if (showSound) {
+        showSound = false;
+        HalLedBlink(OLD_LED, zclApp_Config.ModeSound + 1, 50, 750);
+    } else if (showMode) {
+        showMode = false;
+        HalLedBlink(OLD_LED, zclApp_Config.ModeOpen + 1, 50, 250);
+    }
+
   if (zclApp_Config.ModeOpen == Always) {
     HalLedSet(GREEN_LED, HAL_LED_MODE_ON);
   }
@@ -382,7 +419,7 @@ static void zclApp_WorkWithLEDs(void) {
     HalLedSet(GREEN_LED, HAL_LED_MODE_OFF);
   }
   if (zclApp_Config.ModeOpen == Once) {
-    HalLedBlink(GREEN_LED, 0, 96, 1000);
+    HalLedBlink(GREEN_LED, 0, 95, 500);
   }
   if (zclApp_Config.ModeOpen == Drop) {
     HalLedSet(RED_LED, HAL_LED_MODE_ON);
@@ -420,6 +457,7 @@ static void zclApp_BtnClicks(byte count) {
         else {
           zclApp_Config.ModeOpen = Once;
         }
+        showMode = true;
         break;
     case 2:
         LREPMaster("Button double\r\n");
@@ -429,6 +467,7 @@ static void zclApp_BtnClicks(byte count) {
           CATCH_PIN = !zclApp_Config.ModeSound;
           zclApp_OneReport();
         }
+        showSound = true;
         break;
     case 255:
         LREPMaster("Button hold\r\n");
@@ -444,21 +483,19 @@ static void zclApp_BtnClicks(byte count) {
           zclApp_TalkStart();
           osal_start_timerEx(zclApp_TaskID, APP_RING_STOP_EVT, 250);
         }
+        showMode = true;
+        showSound = true;
         break;
     }
-}
-
-static void zclApp_Report(void) {
-    zclApp_OneReport();
 }
 
 static void zclApp_OneReport(void) {
     //HalLedSet(BLUE_LED, HAL_LED_MODE_BLINK);
     bdb_RepChangedAttrValue(zclApp_FirstEP.EndPoint, ZCL_INTERCOM, ATTRID_STATE);
     bdb_RepChangedAttrValue(zclApp_FirstEP.EndPoint, ZCL_INTERCOM, ATTRID_MODEOPEN);
-    #if !defined( ZIC_BATTERY_MODE )
+//    #if !defined( ZIC_BATTERY_MODE )
       bdb_RepChangedAttrValue(zclApp_FirstEP.EndPoint, ZCL_INTERCOM, ATTRID_MODESOUND);
-    #endif    
+//    #endif
     
 }
 
