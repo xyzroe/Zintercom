@@ -160,18 +160,16 @@ static void zclApp_HandleKeys(byte portAndAction, byte keyCode) {
     if (portAndAction & KEY_INCOME_PORT) { //P0 Ring //S1 P0_1  TODO add check Income pin
       //exit old stop timer
       osal_stop_timerEx(zclApp_TaskID, APP_RING_STOP_EVT);
-      uint32 TimeBell = (uint32)zclApp_Config.TimeBell *(uint32)1000;
-      osal_start_timerEx(zclApp_TaskID, APP_RING_STOP_EVT, (uint32)TimeBell);
+      osal_start_timerEx(zclApp_TaskID, APP_RING_STOP_EVT, zclApp_Config.TimeBell * 1000);
       if (portAndAction & HAL_KEY_PRESS) {
           //start ring
-          if (zclApp_State.RingRunStep == 0) {
+          if (zclApp_State.State == Idle) {
               #if defined( ZIC_BATTERY_MODE )
                 osal_pwrmgr_task_state(zclApp_TaskID, PWRMGR_HOLD);
                 isRingOn = true;
               #endif    
               LREPMaster("Ring start\r\n");
-              zclApp_State.RingRunStep = 1;
-              osal_start_timerEx(zclApp_TaskID, APP_RING_RUN_EVT, 500);
+              osal_start_timerEx(zclApp_TaskID, APP_RING_RUN_EVT, 50);
               afAddrType_t inderect_DstAddr = {.addrMode = (afAddrMode_t)AddrNotPresent, .endPoint = 0, .addr.shortAddr = 0};
               zclGeneral_SendOnOff_CmdOn(zclApp_FirstEP.EndPoint, &inderect_DstAddr, FALSE, bdb_getZCLFrameCounter());
           }
@@ -258,7 +256,10 @@ uint16 zclApp_event_loop(uint8 task_id, uint16 events) {
 
     if (events & APP_RING_STOP_EVT) {
         LREPMaster("APP_RING_STOP_EVT\r\n");
-        zclApp_RingEnd();
+        // if answer started - break not allowed
+        if (zclApp_State.State == Ring) {
+            zclApp_RingEnd();
+        }
         return (events ^ APP_RING_STOP_EVT);
     }
     
@@ -293,56 +294,51 @@ uint16 zclApp_event_loop(uint8 task_id, uint16 events) {
 
 
 static void zclApp_RingRun(void) {
-    zclApp_State.RingRunStep++;
-    LREP("zclApp_State.RingRunStep %d\r\n", zclApp_State.RingRunStep);
     LREP("zclApp_State.State %d\r\n", zclApp_State.State);
-    
-    osal_start_timerEx(zclApp_TaskID, APP_RING_RUN_EVT, 500);
-    osal_start_timerEx(zclApp_TaskID, APP_WORK_LED_EVT, 50);
+    uint32 timeRingStart = osal_GetSystemClock();
+    // timeout for next ring step
+    // 250 - default ring timeout in Never mode
+    uint32 timeout_value = 250;
 
     switch (zclApp_State.State) {
     case Idle:
         zclApp_State.State = Ring;
+        if (zclApp_Config.ModeOpen != Never) {
+            timeout_value = zclApp_Config.TimeRing * 1000;
+        }
         zclApp_OneReport();
         break; 
     case Ring:
-        if ((zclApp_Config.ModeOpen == Once) || (zclApp_Config.ModeOpen == Always)){
-            if (zclApp_State.RingRunStep > (zclApp_Config.TimeRing * 2)) {
-                zclApp_State.State = Talk;
-                zclApp_TalkStart();
-            }
+        if (zclApp_Config.ModeOpen == Never) {
+            break;
         }
-        if (zclApp_Config.ModeOpen == Drop){
-            zclApp_State.State = Droped;
-            zclApp_TalkStart();
-        }
-        break; 
+        zclApp_State.State = Talk;
+        timeout_value = zclApp_Config.TimeTalk * 1000;
+        zclApp_TalkStart();
+        break;
     case Talk:
         osal_stop_timerEx(zclApp_TaskID, APP_RING_STOP_EVT);
-        if ((zclApp_Config.ModeOpen == Once) || (zclApp_Config.ModeOpen == Always)){
-            if (zclApp_State.RingRunStep > ((zclApp_Config.TimeRing + zclApp_Config.TimeTalk) * 2)) {
-                zclApp_State.State = Open;
-                ANSWER_PIN = 0;
-                zclApp_OneReport();
-            }
+        if (zclApp_Config.ModeOpen == Once || zclApp_Config.ModeOpen == Always) {
+            // open door
+            timeout_value = zclApp_Config.TimeOpen * 1000;
+            zclApp_State.State = Open;
+            ANSWER_PIN = 0;
+            zclApp_OneReport();
+            break;
         }
-        break; 
+        // No break here. End call without open
     case Open:
+        // end call
         osal_stop_timerEx(zclApp_TaskID, APP_RING_STOP_EVT);
-        if ((zclApp_Config.ModeOpen == Once) || (zclApp_Config.ModeOpen == Always)){
-            if (zclApp_State.RingRunStep > ((zclApp_Config.TimeRing + zclApp_Config.TimeTalk + zclApp_Config.TimeOpen) * 2)) {
-                zclApp_RingEnd();
-            }
-        }
-        break; 
-    case Droped:
-        osal_stop_timerEx(zclApp_TaskID, APP_RING_STOP_EVT);
-        if (zclApp_State.RingRunStep > 1) {
-            zclApp_RingEnd();
-        }     
-        break; 
+        zclApp_RingEnd();
+        timeout_value = 0;
+        break;
     }
 
+    if (timeout_value != 0) {
+        osal_start_timerEx(zclApp_TaskID, APP_RING_RUN_EVT, timeout_value);
+    }
+    osal_start_timerEx(zclApp_TaskID, APP_WORK_LED_EVT, 50);
 }
 
 static void zclApp_TalkStart(void) {
@@ -364,7 +360,6 @@ static void zclApp_RingEnd(void) {
     ANSWER_PIN = 0;
     osal_stop_timerEx(zclApp_TaskID, APP_RING_RUN_EVT);
     osal_start_timerEx(zclApp_TaskID, APP_WORK_LED_EVT, 50);
-    zclApp_State.RingRunStep = 0;
     zclApp_State.State = Idle;
     
     afAddrType_t inderect_DstAddr = {.addrMode = (afAddrMode_t)AddrNotPresent, .endPoint = 0, .addr.shortAddr = 0};  
@@ -446,6 +441,7 @@ static void zclApp_BtnClicks(byte count) {
     case 1:
         LREPMaster("Button click\r\n");
         if (zclApp_State.State == Idle) {
+          // if we don`t have income ring - change mode
           if (zclApp_Config.ModeOpen < Drop) {
             zclApp_Config.ModeOpen++;
           }
@@ -455,7 +451,10 @@ static void zclApp_BtnClicks(byte count) {
           zclApp_OneReport();
         }
         else {
-          zclApp_Config.ModeOpen = Once;
+          // if we have income ring, and mode is Never - open door
+          if (zclApp_State.State == Ring && zclApp_Config.ModeOpen == Never) {
+            zclApp_Config.ModeOpen = Once;
+          }
         }
         showMode = true;
         break;
@@ -472,6 +471,7 @@ static void zclApp_BtnClicks(byte count) {
     case 255:
         LREPMaster("Button hold\r\n");
         if (zclApp_State.State == Idle) {
+          // if we don`t have income ring - reset mode
           zclApp_Config.ModeSound = true;
           HANDSET_PIN = !zclApp_Config.ModeSound;
           CATCH_PIN = !zclApp_Config.ModeSound;
@@ -479,8 +479,15 @@ static void zclApp_BtnClicks(byte count) {
           zclApp_OneReport();
         }
         else {
-          zclApp_State.State = Droped;
-          zclApp_TalkStart();
+          // if we have income ring - drop it
+          if (zclApp_State.State == Ring) {
+              // in stage "ring" - start talk
+              osal_stop_timerEx(zclApp_TaskID, APP_RING_RUN_EVT);
+              osal_start_timerEx(zclApp_TaskID, APP_RING_RUN_EVT, zclApp_Config.TimeTalk * 1000);
+              zclApp_TalkStart();
+          }
+          // skip step "open", go to end call
+          zclApp_State.State = Open;
           osal_start_timerEx(zclApp_TaskID, APP_RING_STOP_EVT, 250);
         }
         showMode = true;
@@ -490,13 +497,9 @@ static void zclApp_BtnClicks(byte count) {
 }
 
 static void zclApp_OneReport(void) {
-    //HalLedSet(BLUE_LED, HAL_LED_MODE_BLINK);
     bdb_RepChangedAttrValue(zclApp_FirstEP.EndPoint, ZCL_INTERCOM, ATTRID_STATE);
     bdb_RepChangedAttrValue(zclApp_FirstEP.EndPoint, ZCL_INTERCOM, ATTRID_MODEOPEN);
-//    #if !defined( ZIC_BATTERY_MODE )
-      bdb_RepChangedAttrValue(zclApp_FirstEP.EndPoint, ZCL_INTERCOM, ATTRID_MODESOUND);
-//    #endif
-    
+    bdb_RepChangedAttrValue(zclApp_FirstEP.EndPoint, ZCL_INTERCOM, ATTRID_MODESOUND);
 }
 
 static void zclApp_BasicResetCB(void) {
@@ -527,9 +530,11 @@ static void zclApp_ConfigInit(bool restart) {
     osal_start_reload_timer(zclApp_TaskID, APP_REPORT_EVT, ((uint32)ReportInterval*(uint32)1000));
     osal_start_timerEx(zclApp_TaskID, APP_WORK_LED_EVT, 50);
 
-    HANDSET_PIN = !zclApp_Config.ModeSound;
-    CATCH_PIN = !zclApp_Config.ModeSound;
-    ANSWER_PIN = 0;
+    if (zclApp_State.State == Idle) {
+      HANDSET_PIN = !zclApp_Config.ModeSound;
+      CATCH_PIN = !zclApp_Config.ModeSound;
+      ANSWER_PIN = 0;
+    }
 }
 
 static void zclApp_RestoreAttributesFromNV(void) {

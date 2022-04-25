@@ -81,7 +81,6 @@ application_config_t zclApp_Config = {
 
 device_state_t zclApp_State = {
     .State = Idle,
-    .RingRunStep = 0,
     .pressTime = 0,
 };
 

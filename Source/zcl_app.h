@@ -111,7 +111,6 @@ typedef struct {
 
 typedef struct {
     WorkState_t State;
-    uint8 RingRunStep;
     uint32 pressTime;
     byte clicks;
 } device_state_t;
