@@ -25,6 +25,14 @@ You can control sound mode using z2m or by long-press the button. (1000ms < X < 
 After pressing the button, the LED will flash at 1.5 Hz.  
 One flash - OFF, two flashes - ON.  
 
+## Hardware v2.0
+New version of the board with RGB led support.  
+All known bugs and shortcomings have been fixed.  
+Thanks [@Utyff](https://github.com/Utyff)
+### [More info](https://github.com/diyruz/Zintercom/blob/master/README-RGB.md)
+  
+  
+  
   
   
 ## Important info
