@@ -61,30 +61,44 @@
 #define HAL_LED_BLINK_DELAY()   st( { volatile uint32 i; for (i=0; i<0x5800; i++) { }; } )
 
 #if defined(HAL_BOARD_TARGET)
- //led
-  #define LED1_BV           BV(4)
-  #define LED1_SBIT         P0_4
-  #define LED1_DDR          P0DIR
+// blue
+  #define LED1_BV           BV(7)
+  #define LED1_SBIT         P1_7
+  #define LED1_DDR          P1DIR
   #define LED1_POLARITY     ACTIVE_HIGH
-//catch
-  #define LED2_BV           BV(1)
-  #define LED2_SBIT         P0_1
-  #define LED2_DDR          P0DIR
+// green
+  #define LED2_BV           BV(6)
+  #define LED2_SBIT         P1_6
+  #define LED2_DDR          P1DIR
   #define LED2_POLARITY     ACTIVE_HIGH
-//answer
-  #define LED3_BV           BV(2)
-  #define LED3_SBIT         P0_2
-  #define LED3_DDR          P0DIR
+// red
+  #define LED3_BV           BV(5)
+  #define LED3_SBIT         P1_5
+  #define LED3_DDR          P1DIR
   #define LED3_POLARITY     ACTIVE_HIGH
-//handset
-  #define LED4_BV           BV(3)
-  #define LED4_SBIT         P0_3
+// old led
+  #define LED4_BV           BV(4)
+  #define LED4_SBIT         P0_4
   #define LED4_DDR          P0DIR
   #define LED4_POLARITY     ACTIVE_HIGH
-
+// Catch control pin
+  #define CATCH_BV          BV(1)
+  #define CATCH_PIN         P0_1
+  #define CATCH_DDR         P0DIR
+  #define CATCH_SSR         P0SEL
+// Answer control pin
+  #define ANSWER_BV         BV(2)
+  #define ANSWER_PIN        P0_2
+  #define ANSWER_DDR        P0DIR
+  #define ANSWER_SSR        P0SEL
+// Handset control pin
+  #define HANDSET_BV        BV(3)
+  #define HANDSET_PIN       P0_3
+  #define HANDSET_DDR       P0DIR
+  #define HANDSET_SSR       P0SEL
 
 #elif defined(HAL_BOARD_CHDTECH_DEV)
- //blue//d3
+//blue//d3
   #define LED1_BV           BV(4)
   #define LED1_SBIT         P1_4
   #define LED1_DDR          P1DIR
@@ -100,13 +114,33 @@
   #define LED3_DDR          P1DIR
   #define LED3_POLARITY     ACTIVE_LOW
 //ex
-  #define LED4_BV           BV(5)
-  #define LED4_SBIT         P1_5
-  #define LED4_DDR          P1DIR
-  #define LED4_POLARITY     ACTIVE_LOW
+  #define LED4_BV           BV(4)
+  #define LED4_SBIT         P0_4
+  #define LED4_DDR          P0DIR
+  #define LED4_POLARITY     ACTIVE_HIGH
+// Catch control pin
+  #define CATCH_BV          BV(1)
+  #define CATCH_PIN         P0_1
+  #define CATCH_DDR         P0DIR
+  #define CATCH_SSR         P0SEL
+// Answer control pin
+  #define ANSWER_BV         BV(2)
+  #define ANSWER_PIN        P1_2
+  #define ANSWER_DDR        P1DIR
+  #define ANSWER_SSR        P1SEL
+// Handset control pin
+  #define HANDSET_BV        BV(3)
+  #define HANDSET_PIN       P1_3
+  #define HANDSET_DDR       P1DIR
+  #define HANDSET_SSR       P1SEL
 #endif
 
+#define BLUE_LED            HAL_LED_1
+#define GREEN_LED           HAL_LED_2
+#define RED_LED             HAL_LED_3
+#define OLD_LED             HAL_LED_4
 
+#define INFO_LED            HAL_LED_1 | HAL_LED_4
 
 /* ------------------------------------------------------------------------------------------------
  *                                    Push Button Configuration
