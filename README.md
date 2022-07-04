@@ -124,6 +124,10 @@ For example, you can turn on the light while a call comes to the intercom, for n
 
 ![](https://cdn.thingiverse.com/assets/0b/2f/09/d3/37/large_display_2021-05-22_22-55-43.JPG)
 
+### Like ♥️?
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/xyzroe)
+
+
 ### Inspired by
 The original scheme of the intercom opener by [Alexander Vaidurov](https://easyeda.com/Alex_AW/domofon-with-battery)  
 Various hardware solutions by [Jager](https://modkam.ru)  
