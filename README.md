@@ -1,4 +1,7 @@
 # Zintercom
+[![GitHub version](https://img.shields.io/github/release/xyzroe/Zintercom.svg)](https://github.com/xyzroe/Zintercom/releases)
+[![GitHub download](https://img.shields.io/github/downloads/xyzroe/Zintercom/total.svg)](https://github.com/xyzroe/Zintercom/latest)
+[![License](https://img.shields.io/github/license/xyzroe/Zintercom.svg)](LICENSE.txt)
 
 ## How to compile
 Follow this article https://zigdevwiki.github.io/Begin/IAR_install/
